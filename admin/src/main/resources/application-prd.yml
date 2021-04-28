@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysqlserver:3306/cpc-admin?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:wftest@231}
+  redis:
+    host: access.limit.redis.host
+    port: 6377
+    password:
+    timeout: 5000
+    jedis:
+      pool:
+        max-idle: 5
+        max-active: 600
+        max-wait: 1000
+
+#solr地址
+  data:
+    solr:
+      host: http://solr.solr8:18081/solr/
+
+server:
+  servlet:
+    context-path: /admin
+
+file:
+  #文件上传存储
+  upload-folder: /home/cpc-deploy/
+  #文件部署路径
+  deploy-folder: /home/cpc-deploy/
+  #资源文件访问路径
+  access-path-pattern: data
+  #模板部署访问路径
+  deploy-path-pattern: deploy
+logging:
+  level:
+    com.wanfangdata.cpc.module.admin.mapper.*: ERROR

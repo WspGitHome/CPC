@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbPropertyImportMapper">
+    <resultMap id="rm" type="com.wanfangdata.cpc.module.admin.model.db.DbPropertyImport">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="fileName" jdbcType="VARCHAR" column="file_name"/>
+        <result property="fileNameReal" jdbcType="VARCHAR" column="file_name_real"/>
+        <result property="filePath" jdbcType="VARCHAR" column="file_path"/>
+        <result property="libraryId" jdbcType="INTEGER" column="library_id"/>
+        <result property="libraryName" jdbcType="VARCHAR" column="library_name"/>
+        <result property="propertyId" jdbcType="INTEGER" column="property_id"/>
+        <result property="propertyName" jdbcType="VARCHAR" column="property_name"/>
+        <result property="propertyTableName" jdbcType="VARCHAR" column="property_table_name"/>
+        <result property="status" jdbcType="BIT" column="status"/>
+        <result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+        <result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+    </resultMap>
+
+    <select id="findByCondition" parameterType="com.wanfangdata.cpc.module.admin.vo.db.PropertyImportConditionVo" resultMap="rm">
+        SELECT *,p.property_name property_name,l.name library_name  FROM db_property_import t
+        LEFT JOIN db_property p on p.id=t.property_id
+        LEFT JOIN db_library l on l.id=t.library_id
+        where 1=1
+        <if test="vo.libraryId !=null  and vo.libraryId !=''">
+            AND t.library_id = #{vo.libraryId}
+        </if>
+        <if test="vo.propertyId !=null  and vo.propertyId !=''">
+            AND t.property_id = #{vo.propertyId}
+        </if>
+        <if test="vo.status !=null  and vo.status !=''">
+            AND t.status = #{vo.status}
+        </if>
+        ORDER BY t.create_time DESC
+    </select>
+
+    <select id="getById" parameterType="int" resultMap="rm">
+        SELECT *,p.property_name property_name,p.property_table_name property_table_name, l.name library_name  FROM db_property_import t
+        LEFT JOIN db_property p on p.id=t.property_id
+        LEFT JOIN db_library l on l.id=t.library_id
+        WHERE t.id=#{id}
+    </select>
+</mapper>

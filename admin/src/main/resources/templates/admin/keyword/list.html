@@ -1,0 +1,234 @@
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">关键词列表</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a th:href="@{admin}">首页</a></li>
+                    <li class="breadcrumb-item active">关键词管理</li>
+                    <li class="breadcrumb-item active">关键词列表</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- Main content -->
+<section class="content">
+    <div class="card card-info">
+        <form id="searchForm" class="needs-validation form-inline" novalidate="">
+            <div class="form-group">
+                <label >所属栏目:</label>
+                <select id="libType" class="form-control m-2" required="" th:style="'width:150px;'">
+                    <option selected disabled>选择分类</option>
+                    <option th:each="library:${libraries}" th:value="${library.id}"
+                            th:text="${library.name}"></option>
+                </select>
+                <select id="libraryId" class="form-control m-2" required="" th:style="'width:200px;'">
+                    <option selected disabled>选择数据库</option>
+                </select>
+                <input id="pid-form" name="columnId" type="hidden">
+                <select id="pid" class="form-control m-2" required="" th:style="'width:200px;'">
+                    <option selected disabled>一级栏目</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>关键词名称:</label>
+                <input type="text" class="form-control m-2" id="keywordName" required="" name="dbContent.keywordName">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary ml-3" type="submit">查询</button>
+                <button class="btn btn-default ml-2" type="reset" onclick="clearForm(this)">重置</button>
+            </div>
+        </form>
+    </div>
+    <div class="card card-body">
+        <table class="table-sm" id="table"></table>
+    </div>
+</section>
+<!-- 权限分配模态框 -->
+<section id="columnTreeWrapper">
+    <div class="modal fade" id="columnTreeModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignPermissionTitle">栏目树</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul id="columnTree" class="ztree"></ul>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<button class="btn btn-info btn-sm" onclick="columnTree()">栏目树</button>
+<script>
+    var editFlag = "[[${@perms.hasPerm('keyword:edit')}]]";
+    var deleteFlag = "[[${@perms.hasPerm('keyword:delete')}]]";
+    var columns = [
+        {
+            field: 'keywordName',
+            title: '关键词名称',
+            align: "center"
+        }, {
+            field: 'keywords',
+            title: '关键词',
+            align: "center",
+        }, {
+            field: 'columnId',
+            title: '栏目名称',
+            align: "center",
+        },{
+            field: 'orderNum',
+            title: '关键词排序',
+            align: "center",
+            width: 250,
+            formatter: function (value, row, index) {
+                var up = '<button class="btn btn-info btn-sm" onclick="moveUp(' + index + ')">↑</button>';
+                var down =  '<button class="btn btn-danger btn-sm ml-1" onclick="moveDown(' + index + ')">↓</button>';
+                return up + down;
+            }
+        },{
+            field: 'operation',
+            title: '操作',
+            align: "center",
+            width: 250,
+            formatter: function (value, row, index) {
+                var edit = editFlag ? '<button class="btn btn-info btn-sm" onclick="editLibrary(' + row.id + ')">编辑</button>' : '';
+                var del = deleteFlag ? '<button class="btn btn-danger btn-sm ml-1" onclick="deleteLibrary(' + row.id + ')">删除</button>' : '';
+                return edit + del;
+            }
+        }];
+    var options = {
+        id: "#table",
+        url: '/keyword/keywordList',
+        columns: columns,
+        toolbar: '#toolbar',
+        showRefresh: true,
+        queryParams: queryParams
+    }
+    Core.initTable(options);
+
+    function refreshTable() {
+        Core.refreshTable("#table")
+    }
+
+    /*查询参数*/
+    function queryParams(params) {
+        var columnId=$('#pid-form').val();
+        return {
+            pageNumber: params.pageNumber,
+            pageSize: params.pageSize,
+            dbType: $("#libType").val(),
+            libraryId: $("#libraryId").val(),
+            columnId:columnId,
+            keywordName: $("#keywordName").val(),
+        };
+    }
+
+    /*编辑*/
+    function editLibrary(id) {
+        window.location.href = "#keyword/edit?id=" + id
+    }
+
+    /*删除*/
+    function deleteLibrary(id) {
+        Core.confirm("确定删除该关键词？", function () {
+            Core.postAjax("/keyword/delete", {"id": id}, function (data) {
+                if (data.status === 200) {
+                    Core.refreshTable("#table",1)
+                }
+                layer.msg(data.msg);
+            })
+        })
+    }
+    function moveUp(index) {
+        let allData= $("#table").bootstrapTable('getData');
+        let currentInfo = JSON.parse(JSON.stringify(allData[index]));
+        var currentId=currentInfo.id;
+        if (index == 0) {
+            layer.msg("首行数据不能上移！")
+            return;
+        }
+        let lastInfo = JSON.parse(JSON.stringify(allData[index-1]));
+        var lastId=lastInfo.id;
+        Core.postAjax("/keyword/moveUp", {"currentId": currentId,"lastId":lastId}, function (data) {
+            if (data.status === 200) {
+                Core.refreshTable("#table",1)
+            }
+            layer.msg(data.msg);
+        })
+    }
+    function moveDown(index) {
+        let allData= $("#table").bootstrapTable('getData');
+        let currentInfo = JSON.parse(JSON.stringify(allData[index]));
+        var currentId=currentInfo.id;
+        if (index == allData.length-1) {
+            layer.msg("尾行数据不能下移！");
+            return;
+        }
+        let nextInfo = JSON.parse(JSON.stringify(allData[index+1]));
+        var nextId=nextInfo.id;
+        Core.postAjax("/keyword/moveDown", {"currentId": currentId,"nextId":nextId}, function (data) {
+            if (data.status === 200) {
+                Core.refreshTable("#table",1)
+            }
+            layer.msg(data.msg);
+        })
+    }
+    function clearForm(obj) {
+        var form = $(obj).parents("form");
+        $(form)[0].reset();
+        $("[name='columnId']").val("");//
+    }
+    $(function () {
+        // 查询
+        $('#searchForm').submit(function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            refreshTable();
+        })
+
+    });
+
+    //树-初始化设置
+    var treeSetting = {
+        check: {
+            enable: false,
+            chkStyle: "checkbox",
+            chkboxType: {"Y": "ps", "N": "s"}
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pid"
+            }
+        }
+    };
+    //获取栏目树
+    function columnTree() {
+        var library=$("#libraryId  option:selected").val();
+        if(library==undefined ||library=="" ||!r.test(library)){
+            alert("请选择数据库");
+            return;
+        }
+        Core.postAjax("/column/tree", {"library": library}, function (data) {
+            var zNodes = data;
+            var zTree =$.fn.zTree.init($("#columnTree"), treeSetting, zNodes);
+            var cNode = zTree.getNodeByParam("id", 0);  ///id为树头节点的id
+            zTree.expandNode(cNode, true, false);
+            $("#columnTreeModal").modal("show");
+        })
+    }
+
+    $(function () {
+        initChain();
+    })
+</script>

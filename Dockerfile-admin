@@ -1,0 +1,4 @@
+FROM gmaslowski/jdk:8
+WORKDIR /app
+COPY output/admin/admin.jar .
+ENTRYPOINT ["sh","-c","java -jar admin.jar"]

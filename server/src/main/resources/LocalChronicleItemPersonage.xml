@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Root>
+    <AlbumCategory Value="历史人物" Name="A">
+        <SubAlbumCategory Value="南北朝" Name="A1" />
+        <SubAlbumCategory Value="隋唐" Name="A2" />
+        <SubAlbumCategory Value="汉代" Name="A3" />
+        <SubAlbumCategory Value="三国" Name="A4" />
+        <SubAlbumCategory Value="晋" Name="A5" />
+        <SubAlbumCategory Value="宋" Name="A6" />
+        <SubAlbumCategory Value="元" Name="A7" />
+        <SubAlbumCategory Value="明" Name="A8" />
+        <SubAlbumCategory Value="清" Name="A9" />
+        <SubAlbumCategory Value="民国" Name="A10" />
+        <SubAlbumCategory Value="其他" Name="A11" />
+    </AlbumCategory>
+    <AlbumCategory Value="科学技术" Name="B">
+        <SubAlbumCategory Value="农业科学" Name="B1" />
+        <SubAlbumCategory Value="交叉科学" Name="B2" />
+        <SubAlbumCategory Value="医药科学" Name="B3" />
+        <SubAlbumCategory Value="基础科学" Name="B4" />
+        <SubAlbumCategory Value="其他" Name="B5" />
+    </AlbumCategory>
+    <AlbumCategory Value="文化界" Name="C">
+        <SubAlbumCategory Value="文学" Name="C1" />
+        <SubAlbumCategory Value="艺术" Name="C2" />
+        <SubAlbumCategory Value="文物保护" Name="C3" />
+        <SubAlbumCategory Value="国学" Name="C4" />
+        <SubAlbumCategory Value="其他" Name="C5" />
+    </AlbumCategory>
+    <AlbumCategory Value="教育界" Name="D">
+    </AlbumCategory>
+    <AlbumCategory Value="卫生界" Name="E">
+    </AlbumCategory>
+    <AlbumCategory Value="体育界" Name="F">
+        <SubAlbumCategory Value="武术" Name="F1" />
+        <SubAlbumCategory Value="全国/世界冠军" Name="F2" />
+        <SubAlbumCategory Value="教练员" Name="F3" />
+        <SubAlbumCategory Value="优秀运动员" Name="F4" />
+        <SubAlbumCategory Value="其他" Name="F5" />
+    </AlbumCategory>
+    <AlbumCategory Value="经济界" Name="G">
+        <SubAlbumCategory Value="经济学家" Name="G1" />
+        <SubAlbumCategory Value="企业名录" Name="G2" />
+    </AlbumCategory>
+    <AlbumCategory Value="党政军" Name="H">
+        <SubAlbumCategory Value="革命战争" Name="H1" />
+        <SubAlbumCategory Value="政治法律界" Name="H2" />
+        <SubAlbumCategory Value="军事界" Name="H3" />
+        <SubAlbumCategory Value="领导人物" Name="H4" />
+        <SubAlbumCategory Value="政府机构" Name="H5" />
+        <SubAlbumCategory Value="其他" Name="H6" />
+    </AlbumCategory>
+    <AlbumCategory Value="工业技术" Name="I">
+        <SubAlbumCategory Value="兵器工业" Name="I1" />
+        <SubAlbumCategory Value="土木建筑" Name="I2" />
+        <SubAlbumCategory Value="能源工业" Name="I3" />
+        <SubAlbumCategory Value="核技术" Name="I4" />
+        <SubAlbumCategory Value="工业自动化" Name="I5" />
+        <SubAlbumCategory Value="计算机技术" Name="I6" />
+        <SubAlbumCategory Value="交通运输" Name="I7" />
+        <SubAlbumCategory Value="轻工业" Name="I8" />
+        <SubAlbumCategory Value="重工业" Name="I9" />
+        <SubAlbumCategory Value="化工工业" Name="I10" />
+        <SubAlbumCategory Value="其他" Name="I11" />
+    </AlbumCategory>
+    <AlbumCategory Value="劳动模范" Name="J">
+    </AlbumCategory>
+    <AlbumCategory Value="百岁老人" Name="K">
+    </AlbumCategory>
+    <AlbumCategory Value="其他" Name="Z">
+    </AlbumCategory>
+</Root>

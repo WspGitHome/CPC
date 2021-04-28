@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbPropertyListMapper">
+    <resultMap id="rm" type="com.wanfangdata.cpc.module.admin.model.db.LocalChronicle">
+        <result property="id" jdbcType="VARCHAR" column="Id"/>
+        <result property="newTitle" jdbcType="VARCHAR" column="NewTitle"/>
+        <result property="bookTitle" jdbcType="VARCHAR" column="BookTitle"/>
+        <result property="introduction" jdbcType="VARCHAR" column="Introduction"/>
+        <result property="editorial" jdbcType="VARCHAR" column="Editorial"/>
+        <result property="editor" jdbcType="VARCHAR" column="Editor"/>
+        <result property="publisher" jdbcType="VARCHAR" column="Publisher"/>
+        <result property="province" jdbcType="VARCHAR" column="Province"/>
+        <result property="city" jdbcType="VARCHAR" column="City"/>
+        <result property="county" jdbcType="VARCHAR" column="County"/>
+        <result property="columnId" jdbcType="VARCHAR" column="ColumnId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+		Id,
+		NewTitle,
+		BookTitle,
+		Introduction,
+		Editorial,
+		Editor,
+		Publisher,
+		Province,
+		City,
+		County,
+		Keywords,
+		ColumnId
+	</sql>
+    <select id="selectById" resultType="com.wanfangdata.cpc.module.admin.model.db.LocalChronicle" parameterType="java.lang.String">
+        select
+        Id,NewTitle,BookTitle,Introduction,Editorial,Editor,Publisher,Province,City,County,Keywords,libraryId,columnId
+        from localChronicle
+        where Id=#{id}
+    </select>
+   <update id="updateLocalChronicle" parameterType="com.wanfangdata.cpc.module.admin.model.db.LocalChronicle">
+       update localChronicle
+       set
+       <if test="localChronicle.newTitle != null and localChronicle.newTitle !=''">
+           NewTitle = #{localChronicle.newTitle},
+       </if>
+       <if test="localChronicle.bookTitle != null and localChronicle.bookTitle !=''">
+           BookTitle = #{localChronicle.bookTitle},
+       </if>
+       <if test="localChronicle.introduction != null and localChronicle.introduction !=''">
+           Introduction= #{localChronicle.introduction},
+       </if>
+       <if test="localChronicle.editorial != null and localChronicle.editorial !=''">
+           Editorial = #{localChronicle.editorial},
+       </if>
+       <if test="localChronicle.editor != null and localChronicle.editor !=''">
+           Editor = #{localChronicle.editor},
+       </if>
+       <if test="localChronicle.publisher != null and localChronicle.publisher !=''">
+           Publisher = #{localChronicle.publisher},
+       </if>
+       <if test="localChronicle.editor != null and localChronicle.editor !=''">
+           Editor = #{localChronicle.editor},
+       </if>
+       <if test="localChronicle.province != null and localChronicle.province !=''">
+           Province = #{localChronicle.province},
+       </if>
+       <if test="localChronicle.city != null and localChronicle.city !=''">
+           City =#{localChronicle.city},
+       </if>
+       <if test="localChronicle.county != null and localChronicle.county !=''">
+           County =#{localChronicle.county},
+       </if>
+       <if test="localChronicle.keywords != null and localChronicle.keywords !=''">
+           Keywords = #{localChronicle.keywords},
+       </if>
+       <if test="localChronicle.libraryId != null and localChronicle.libraryId !=''">
+           libraryId =#{localChronicle.libraryId},
+       </if>
+       <if test="localChronicle.columnId != null and localChronicle.columnId !=''">
+           ColumnId = #{localChronicle.columnId},
+       </if>
+		update_time =#{localChronicle.updateTime}
+		where Id = #{localChronicle.id}
+   </update>
+
+	<select id="selectItemById" resultType="com.wanfangdata.cpc.module.admin.model.db.LocalChronicleItem" parameterType="java.lang.String">
+        select
+        Id,Title,NewTitle,BookTitle,Content,Editorial,Editor,Publisher,Province,City,County,Keywords,libraryId,columnId
+        from localChronicleItem
+        where Id=#{id}
+    </select>
+    <update id="updateLocalChronicleItem" parameterType="com.wanfangdata.cpc.module.admin.model.db.LocalChronicleItem">
+       update localChronicleItem
+       set
+        <if test="item.newTitle != null and item.newTitle !=''">
+            NewTitle= #{item.newTitle},
+        </if>
+        <if test="item.title != null and item.title !=''">
+            Title= #{item.title},
+        </if>
+        <if test="item.keywords != null and item.keywords !=''">
+            Keywords= #{item.keywords},
+        </if>
+        <if test="item.content != null and item.content !=''">
+            Content= #{item.content},
+        </if>
+        <if test="item.bookTitle != null and item.bookTitle !=''">
+            BookTitle= #{item.bookTitle},
+        </if>
+        <if test="item.editorial != null and item.editorial !=''">
+            Editorial= #{item.editorial},
+        </if>
+        <if test="item.editor != null and item.editor !=''">
+            Editor= #{item.editor},
+        </if>
+        <if test="item.publisher != null and item.publisher !=''">
+            Publisher= #{item.publisher},
+        </if>
+        <if test="item.province != null and item.province !=''">
+            Province= #{item.province},
+        </if>
+        <if test="item.city != null and item.city !=''">
+            City= #{item.city},
+        </if>
+        <if test="item.county != null and item.county !=''">
+            County= #{item.county},
+        </if>
+        <if test="item.libraryId != null and item.libraryId !=''">
+            libraryId =#{item.libraryId},
+        </if>
+        <if test="item.columnId != null and item.columnId !=''">
+            ColumnId = #{item.columnId},
+        </if>
+       update_time =#{item.updateTime}
+       where Id = #{item.id}
+    </update>
+</mapper>

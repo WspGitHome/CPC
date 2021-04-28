@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:cache="http://www.springframework.org/schema/cache"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-3.1.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+                        http://www.springframework.org/schema/cache
+                        http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+	<!--不同资源类型  检索条件过滤器链-->
+	<bean id="preMaintenFilterChain" class="com.wanfangdata.grpc.server.mainten.MaintenFilterChain">
+		<property name="mockFilterChains">
+			<map>
+				<entry key="default" value-ref="defaultPreMockFilterChain"></entry>
+				<entry key="content" value-ref="contentPreMockFilterChain"></entry>
+				<entry key="contentSearch" value-ref="contentSearchPreMockFilterChain"></entry>
+
+			</map>
+		</property>
+	</bean>
+	<!--不同资源类型  检索结果过滤器链-->
+	<bean id="subMaintenFilterChain" class="com.wanfangdata.grpc.server.mainten.MaintenFilterChain">
+		<property name="mockFilterChains">
+			<map>
+				<entry key="default" value-ref="defaultSubMockFilterChain"></entry>
+				<entry key="content" value-ref="contentSubMockFilterChain"></entry>
+				<entry key="contentSearch" value-ref="contentSearchSubMockFilterChain"></entry>
+			</map>
+		</property>
+	</bean>
+
+
+	<!--——————————————————————————————————————————————————————-->
+	<!--默认检索条件过滤器链-->
+	<bean id="defaultPreMockFilterChain" class="com.wanfangdata.api.chain.MockFilterChain">
+		<property name="filters">
+			<list>
+				<ref bean="queryFilter"></ref>
+			</list>
+		</property>
+	</bean>
+	<!--目录处理过滤器链-->
+	<bean id="contentPreMockFilterChain" class="com.wanfangdata.api.chain.MockFilterChain">
+		<property name="filters">
+			<list>
+				<ref bean="contentQueryFilter"></ref>
+			</list>
+		</property>
+	</bean>
+	<!--书内检索过滤器链-->
+	<bean id="contentSearchPreMockFilterChain" class="com.wanfangdata.api.chain.MockFilterChain">
+		<property name="filters">
+			<list>
+				<ref bean="contentSearchQueryFilter"></ref>
+			</list>
+		</property>
+	</bean>
+
+	<!--——————————————————————————————————————————————————————-->
+	<!--默认检索结果过滤器链-->
+	<bean id="defaultSubMockFilterChain" class="com.wanfangdata.api.chain.MockFilterChain">
+		<property name="filters">
+			<list>
+				<ref bean="resultListFilter"></ref>
+				<ref bean="facetFilter"></ref>
+				<ref bean="categoryFacetResultFilter"></ref>
+				<ref bean="facetsPivotFilter"></ref>
+				<ref bean="pageFilter"></ref>
+			</list>
+		</property>
+	</bean>
+	<!--目录检索结果过滤器链-->
+	<bean id="contentSubMockFilterChain" class="com.wanfangdata.api.chain.MockFilterChain">
+		<property name="filters">
+			<list>
+				<ref bean="contentResultFilter"></ref>
+			</list>
+		</property>
+	</bean>
+	<!--书内检索结果过滤器链-->
+	<bean id="contentSearchSubMockFilterChain" class="com.wanfangdata.api.chain.MockFilterChain">
+		<property name="filters">
+			<list>
+				<ref bean="resultListFilter"></ref>
+				<ref bean="contentSearchResultFilter"></ref>
+				<ref bean="pageFilter"></ref>
+			</list>
+		</property>
+	</bean>
+
+
+	<!--——————————————————————————————————————————————————————-->
+	<!--检索条件过滤器-->
+	<bean id="queryFilter" class="com.wanfangdata.grpc.server.query.chain.filter.query.QueryFilter"></bean>
+	<bean id="contentQueryFilter" class="com.wanfangdata.grpc.server.query.chain.filter.query.ContentFilter"></bean>
+	<bean id="contentSearchQueryFilter" class="com.wanfangdata.grpc.server.query.chain.filter.query.ContentSearchFilter"></bean>
+
+	<!--检索结果过滤器-->
+	<bean id="resultListFilter" class="com.wanfangdata.grpc.server.query.chain.filter.result.ResultListFilter"></bean>
+	<bean id="facetFilter" class="com.wanfangdata.grpc.server.query.chain.filter.result.FacetFilter"></bean>
+	<bean id="facetsPivotFilter" class="com.wanfangdata.grpc.server.query.chain.filter.result.FacetsPivotFilter"></bean>
+	<bean id="pageFilter" class="com.wanfangdata.grpc.server.query.chain.filter.result.PageFilter"></bean>
+	<bean id="contentResultFilter" class="com.wanfangdata.grpc.server.query.chain.filter.result.ContentFilter"></bean>
+	<bean id="contentSearchResultFilter" class="com.wanfangdata.grpc.server.query.chain.filter.result.ContentSearchFilter"></bean>
+	<bean id="categoryFacetResultFilter" class="com.wanfangdata.grpc.server.query.chain.filter.result.CategoryFacetFilter"></bean>
+
+</beans>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Root>
+    <AlbumCategory Value="剧种曲种" Name="A">
+        <SubAlbumCategory Value="曲种" Name="A1" />
+        <SubAlbumCategory Value="剧种" Name="A2" />
+        <SubAlbumCategory Value="京剧" Name="A3" />
+        <SubAlbumCategory Value="越剧" Name="A4" />
+        <SubAlbumCategory Value="评剧" Name="A5" />
+        <SubAlbumCategory Value="豫剧" Name="A6" />
+        <SubAlbumCategory Value="曲剧" Name="A7" />
+        <SubAlbumCategory Value="淮剧" Name="A8" />
+        <SubAlbumCategory Value="秦腔" Name="A9" />
+        <SubAlbumCategory Value="赣剧" Name="A10" />
+        <SubAlbumCategory Value="川剧" Name="A11" />
+        <SubAlbumCategory Value="湘剧" Name="A12" />
+        <SubAlbumCategory Value="蒲剧" Name="A13" />
+        <SubAlbumCategory Value="话剧" Name="A14" />
+        <SubAlbumCategory Value="歌剧" Name="A15" />
+        <SubAlbumCategory Value="舞剧" Name="A16" />
+        <SubAlbumCategory Value="皮影戏" Name="A17" />
+        <SubAlbumCategory Value="采茶戏" Name="A18" />
+        <SubAlbumCategory Value="花鼓戏" Name="A19" />
+        <SubAlbumCategory Value="越调" Name="A20" />
+        <SubAlbumCategory Value="木偶戏" Name="A21" />
+        <SubAlbumCategory Value="二人转" Name="A22" />
+        <SubAlbumCategory Value="梆子" Name="A23" />
+    </AlbumCategory>
+    <AlbumCategory Value="剧目曲目" Name="B">
+        <SubAlbumCategory Value="京剧" Name="B1" />
+        <SubAlbumCategory Value="豫剧" Name="B2" />
+        <SubAlbumCategory Value="曲目" Name="B3" />
+        <SubAlbumCategory Value="剧目" Name="B4" />
+    </AlbumCategory>
+    <AlbumCategory Value="音乐表演" Name="C">
+        <SubAlbumCategory Value="音乐" Name="C1" />
+        <SubAlbumCategory Value="表演" Name="C2" />
+    </AlbumCategory>
+    <AlbumCategory Value="舞台美术" Name="D">
+        <SubAlbumCategory Value="化妆" Name="D1" />
+        <SubAlbumCategory Value="脸谱" Name="D2" />
+        <SubAlbumCategory Value="服饰" Name="D3" />
+        <SubAlbumCategory Value="舞台" Name="D4" />
+        <SubAlbumCategory Value="道具" Name="D5" />
+    </AlbumCategory>
+    <AlbumCategory Value="戏曲机构" Name="E">
+        <SubAlbumCategory Value="协会与创作机构" Name="E1" />
+        <SubAlbumCategory Value="科班与学校" Name="E2" />
+        <SubAlbumCategory Value="班社与剧团" Name="E3" />
+        <SubAlbumCategory Value="业余剧团" Name="E4" />
+        <SubAlbumCategory Value="文工队" Name="E5" />
+        <SubAlbumCategory Value="作坊与工厂" Name="E6" />
+        <SubAlbumCategory Value="其他团体" Name="E7" />
+    </AlbumCategory>
+    <AlbumCategory Value="图表" Name="F">
+        <SubAlbumCategory Value="大事年表" Name="F1" />
+        <SubAlbumCategory Value="剧目表" Name="F2" />
+    </AlbumCategory>
+    <AlbumCategory Value="戏曲杂记" Name="G">
+    </AlbumCategory>
+    <AlbumCategory Value="演出场所" Name="H">
+    </AlbumCategory>
+    <AlbumCategory Value="轶闻传说" Name="I">
+    </AlbumCategory>
+    <AlbumCategory Value="报刊专著" Name="J">
+    </AlbumCategory>
+    <AlbumCategory Value="谚语口诀" Name="K">
+    </AlbumCategory>
+    <AlbumCategory Value="演出习俗" Name="L">
+    </AlbumCategory>
+    <AlbumCategory Value="文物古迹" Name="M">
+    </AlbumCategory>
+    <AlbumCategory Value="图片" Name="N">
+    </AlbumCategory>
+    <AlbumCategory Value="传记" Name="O">
+    </AlbumCategory>
+    <AlbumCategory Value="其他" Name="P">
+    </AlbumCategory>
+</Root>

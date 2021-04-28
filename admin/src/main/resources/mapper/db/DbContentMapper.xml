@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbContentMapper">
+    <resultMap id="rm" type="com.wanfangdata.cpc.module.admin.model.db.DbContent">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="dbType" jdbcType="INTEGER" column="db_type"/>
+        <result property="libraryId" jdbcType="INTEGER" column="library_id"/>
+        <result property="columnId" jdbcType="VARCHAR" column="column_id"/>
+        <result property="title" jdbcType="VARCHAR" column="title"/>
+        <result property="author" jdbcType="VARCHAR" column="author"/>
+        <result property="source" jdbcType="VARCHAR" column="source"/>
+        <result property="url" jdbcType="VARCHAR" column="url"/>
+        <result property="picture" jdbcType="VARCHAR" column="picture"/>
+        <result property="introduction" jdbcType="VARCHAR" column="introduction"/>
+        <result property="contentDetails" jdbcType="VARCHAR" column="content_details"/>
+        <result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+        <result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+		id,
+		db_type,
+		library_id,
+		column_id,
+		title,
+		author,
+		source,
+		url,
+		picture,
+		introduction,
+		content_details,
+		create_time,
+		update_time
+	</sql>
+    <select id="findByCondition" parameterType="com.wanfangdata.cpc.module.admin.vo.db.ContentConditionVo"
+            resultMap="rm">
+        SELECT content.id ,content.title,content.update_time,
+        (SELECT col.name FROM db_column as col WHERE col.id=content.column_id) as column_id
+        from db_content as content
+        where 1=1
+        <if test="vo.dbType != null">
+            AND content.db_type = #{vo.dbType}
+        </if>
+        <if test="vo.libraryId != null">
+            AND content.library_id = #{vo.libraryId}
+        </if>
+        <if test="vo.title != null and vo.title !=''">
+            AND content.title like CONCAT('%',#{vo.title , jdbcType=VARCHAR},'%')
+        </if>
+        <if test="vo.columnId != null and vo.columnId !=''">
+            AND content.column_id = #{vo.columnId}
+        </if>
+        order by create_time desc
+    </select>
+
+    <delete id="deleteBatch" parameterType="map">
+        DELETE FROM
+        db_content
+        where
+        id in
+        <foreach collection="array" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteByLibId" parameterType="integer">
+        delete from db_content
+        where library_id=#{libId}
+	</delete>
+    <delete id="deleteByColumnId" parameterType="integer">
+        delete from db_content
+        where column_id=#{columnId}
+	</delete>
+</mapper>
+

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbPropertyMapper">
+    <resultMap id="rm" type="com.wanfangdata.cpc.module.admin.model.db.DbProperty">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="propertyName" jdbcType="VARCHAR" column="property_name"/>
+        <result property="propertyTableName" jdbcType="VARCHAR" column="property_table_name"/>
+        <result property="propertySolrAlias" jdbcType="VARCHAR" column="property_solr_alias"/>
+        <result property="isCreate" jdbcType="BIT" column="is_create"/>
+        <result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+        <result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+        <association property="proList" javaType="com.wanfangdata.cpc.module.admin.model.db.DbPropertyList">
+            <result property="proId" jdbcType="VARCHAR" column="proId"/>
+            <result property="title" jdbcType="VARCHAR" column="title"/>
+            <result property="newTitle" jdbcType="VARCHAR" column="NewTitle"/>
+            <result property="columnName" jdbcType="VARCHAR" column="columnName"/>
+        </association>
+    </resultMap>
+    <insert id="saveBatch" statementType="STATEMENT">
+        replace into ${table}
+        <foreach collection="feilds" item="item" index="index" open="(" separator="," close=")">
+            ${item}
+        </foreach>
+        values
+        <foreach collection="values" item="item" index="index"  separator="," >
+            <foreach item="valueItem" index="index" collection="item" open="(" close=")" separator=",">
+                <if test="valueItem == null">
+                    null
+                </if>
+                <if test="valueItem != null">
+                    '${valueItem}'
+                </if>
+            </foreach>
+        </foreach>
+
+    </insert>
+    <update id="updataColumn" >
+        update ${table}
+        <set >
+            LibraryId = #{feilds.LibraryId},ColumnId = #{feilds.ColumnId}
+        </set>
+        where id = #{feilds.Id}
+    </update>
+
+    <select id="findByPage" resultType="java.util.Map">
+        SELECT * FROM ${table} a JOIN  (select Id from ${table} where 1=1
+        <if test="batchId != null and batchId!=0 ">
+            and BatchId = #{batchId}
+        </if>
+        limit ${start},${size} ) b ON a.Id = b.Id
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        select COUNT(Id) from ${table} where 1=1
+        <if test="batchId != null and batchId != 0">
+            and BatchId = #{batchId}
+        </if>
+    </select>
+    <select id="selectIdForCategory" resultType="com.wanfangdata.cpc.module.admin.model.db.DbIdForCategory" statementType="STATEMENT">
+        SELECT Id,LibraryId,ColumnId from  ${table} where Id in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            '${id}'
+        </foreach>
+    </select>
+    <select id="findByCondition" resultType="com.wanfangdata.cpc.module.admin.model.db.DbPropertyList" resultMap="rm">
+        select  pro.Id as proId,pro.NewTitle,pro.ColumnId,
+        <if test="vo.proType == 'localChronicle'">
+            pro.BookTitle as title
+        </if>
+        <if test="vo.proType != 'localChronicle'">
+            pro.Title as title
+        </if>
+        from ${vo.proType} as pro
+        where 1=1
+        <if test="vo.title != null and vo.title !='' and vo.proType == 'localChronicle'" >
+            AND	 pro.BookTitle like CONCAT('%',#{vo.title , jdbcType=VARCHAR},'%')
+        </if>
+        <if test="vo.title != null and vo.title !='' and vo.proType != 'localChronicle'" >
+            AND	 pro.Title like CONCAT('%',#{vo.title , jdbcType=VARCHAR},'%')
+        </if>
+        <if test="vo.propId != null and vo.propId !=''">
+            AND	 pro.Id = #{vo.propId}
+        </if>
+        <if test="vo.libraryId != null and vo.libraryId !=''">
+            AND	( pro.ColumnId like  CONCAT('',#{vo.libraryId , jdbcType=VARCHAR},'/%')
+            OR    pro.ColumnId like  CONCAT('%\%',#{vo.libraryId , jdbcType=VARCHAR},'/%')
+            )
+        </if>
+        <if test="vo.columnId != null and vo.columnId !=''">
+            AND (pro.ColumnId like CONCAT('',#{vo.columnId , jdbcType=VARCHAR},'%')
+            OR   pro.ColumnId like CONCAT('%\%',#{vo.columnId , jdbcType=VARCHAR},'%')
+            )
+        </if>
+    </select>
+
+    <delete id="deletePro" parameterType="integer">
+        delete from ${proType}
+        where Id = #{proId}
+    </delete>
+</mapper>
+

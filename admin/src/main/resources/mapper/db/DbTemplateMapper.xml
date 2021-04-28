@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbTemplateMapper">
+    <sql id="Base_Column_List">
+         t1.id,
+         t1.db_id,
+         t1.template_id,
+         t1.big_album_logo,
+         t1.small_album_logo,
+         t1.homepage_picture,
+         t1.second_level_picture,
+         t1.thematic_classification,
+         t1.classification_picture,
+         t1.area_classification,
+         t1.area_classification_picture,
+         t1.button_color,
+         t1.click_color,
+         t1.resource_type_book_read,
+         t1.resource_type_item_read,
+         t1.resource_type_item_download,
+         t1.create_time,
+         t1.update_time
+	</sql>
+
+    <insert id="insert" parameterType="dbTemplate">
+        insert into db_template (db_id,
+		template_id,
+		big_album_logo,
+		small_album_logo,
+		homepage_picture,
+		second_level_picture,
+		thematic_classification,
+		classification_picture,
+		area_classification,
+		area_classification_picture,
+		button_color,
+		click_color,
+		resource_type_book_read,
+		resource_type_item_read,
+		resource_type_item_download,
+		create_time,
+		update_time
+		)
+        values (
+        #{dbId},
+        #{templateId},
+        #{bigAlbumLogo},
+        #{smallAlbumLogo},
+        #{homepagePicture},
+        #{secondLevelPicture},
+        #{thematicClassification},
+        #{classificationPicture},
+        #{areaClassification},
+        #{areaClassificationPicture},
+        #{buttonColor},
+        #{clickColor},
+        #{resourceTypeBookRead},
+        #{resourceTypeItemRead},
+        #{resourceTypeItemDownload},
+        #{createTime},
+        #{updateTime}
+        )
+    </insert>
+
+    <update id="updateById" parameterType="dbTemplate">
+update db_template set
+        db_id = #{dbId},
+		template_id = #{templateId},
+		big_album_logo = #{bigAlbumLogo},
+		small_album_logo = #{smallAlbumLogo},
+		homepage_picture = #{homepagePicture},
+		second_level_picture = #{secondLevelPicture},
+		thematic_classification = #{thematicClassification},
+		classification_picture = #{classificationPicture},
+		area_classification = #{areaClassification},
+		area_classification_picture = #{areaClassificationPicture},
+		button_color = #{buttonColor},
+		click_color = #{clickColor},
+		resource_type_book_read = #{resourceTypeBookRead},
+		resource_type_item_read = #{resourceTypeItemRead},
+		resource_type_item_download = #{resourceTypeItemDownload},
+		update_time = #{updateTime}
+		where id = #{id}
+    </update>
+
+    <select id="selectPage" parameterType="dbTemplate" resultType="dbTemplate">
+        select
+        <include refid="Base_Column_List"/>,l1.name as dbName ,p1.name as dbType
+        ,i1.template_name as templateName
+        from db_template t1
+        left join db_template_info i1 on i1.id = t1.template_id
+        left join db_library l1 on t1.db_id = l1.id
+        left join db_libtype p1 on l1.type = p1.id
+        where 1=1
+        <if test="dbTemplate.id !=null and dbTemplate.id !=0">
+            and t1.id = #{dbTemplate.id}
+        </if>
+        <if test="dbTemplate.dbId !=null and dbTemplate.dbId !=0">
+            and t1.db_id = #{dbTemplate.dbId}
+        </if>
+        <if test="dbTemplate.dbTypeId !=null and dbTemplate.dbTypeId !=0">
+            and l1.type = #{dbTemplate.dbTypeId}
+        </if>
+        order by
+        t1.create_time desc
+    </select>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultType="dbTemplate">
+        select
+        <include refid="Base_Column_List"/>
+        ,l1.name as dbName ,p1.name as dbType
+        ,i1.template_name as templateName
+        from db_template t1
+        left join db_template_info i1 on i1.id = t1.template_id
+        left join db_library l1 on t1.db_id = l1.id
+        left join db_libtype p1 on l1.type = p1.id
+        where t1.id = #{id}
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM
+        db_template
+        where
+        id = #{id}
+    </delete>
+</mapper>
+

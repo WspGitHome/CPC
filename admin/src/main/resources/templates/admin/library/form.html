@@ -1,0 +1,108 @@
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">添加/编辑数据库</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a th:href="@{admin}">首页</a></li>
+                    <li class="breadcrumb-item active">数据库管理</li>
+                    <li class="breadcrumb-item active">添加/编辑数据库</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<section class="content">
+    <div class="card card-body">
+        <form id="dbLibraryForm">
+            <input name="id" type="hidden" th:value="${dbLibrary?.id}">
+            <input id="d-type" name="type" type="hidden" th:value="${dbLibrary?.type == null ? 0 : dbLibrary?.type}">
+            <div class="form-group row">
+                <label class="col-sm-1 col-form-label">数据库类型:</label>
+                <div class="col-sm-10">
+                    <select id="s-type" class="form-control" required="" th:style="'width:150px;'">
+                        <option value="">选择类型</option>
+                        <option th:selected="${dbLibrary?.type}== ${library.id}"
+                                th:each="library:${libraries}" th:value="${library.id}"
+                                th:text="${library.name}"></option>
+                    </select>
+                    <div class="invalid-feedback">请选择数据库类型</div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="aliasPath" class="col-sm-1 col-form-label">访问路径:</label>
+                <div class="col-sm-10">
+                    <input type="text" th:style="'width:300px;'"
+                           required="" th:value="${dbLibrary?.aliasPath}" name="aliasPath" class="form-control"
+                           id="aliasPath" placeholder="填写访问路径">
+                    <input type="hidden" th:value="${dbLibrary?.aliasPath}" id="oldAliasPath">
+                    <div class="invalid-feedback">请填写访问路径</div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="name" class="col-sm-1 col-form-label">数据库名称:</label>
+                <div class="col-sm-10">
+                    <input type="text" th:style="'width:300px;'" th:value="${dbLibrary?.name}" name="name"
+                           class="form-control" id="name" placeholder="填写数据库名称" required>
+                    <div class="invalid-feedback">请填数据库名称</div>
+                </div>
+            </div>
+            <div class="form-group ">
+                <a th:href="@{#libraries}" type="button" class="btn btn-secondary" data-dismiss="modal">取消</a>
+                <button type="button" class="btn btn-primary" id="saveOrUpdateBtn" onclick="saveOrUpdate()">保存</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        var type = $("#d-type").val();
+        if (type != undefined && type != 0) {
+            $("#s-type").find("option").each(function () {
+                if ($(this).val() == type) {
+                    $(this).attr("selected", selected);
+                }
+            });
+        }
+        $("#s-type").change(function () {
+            $("#d-type").val($(this).val());
+        });
+    });
+
+    function checkeValue(alias) {
+        var param = {"alias": alias.trim()};
+        Core.postAjax("/library/getDbAlias", param, function (data) {
+            if (data.status == 500) {
+                if (($("#oldAliasPath").val() != $("#aliasPath").val())) {
+                    layer.msg(data.msg);
+                    $("#aliasPath").val("");
+                    $("#aliasPath").focus();
+                }
+            }
+        }, undefined, undefined, undefined, false)
+    }
+
+    function saveOrUpdate() {
+        var $f = $('#dbLibraryForm');
+        checkeValue($("#aliasPath").val());
+        var valid = $f[0].checkValidity();
+        var url = $f.find("input[name='id']").val() ? "/library/edit" : "/library/add";
+        if (valid) {
+            Core.mask("#saveOrUpdateBtn");
+            Core.postAjax(url, $f.serialize(), function (data) {
+                Core.unmask("#saveOrUpdateBtn");
+                if (data.status === 200) {
+                    layer.msg(data.msg);
+                    window.location.href = "#libraries"
+                }
+            }, function () {
+                Core.unmask("#saveOrUpdateBtn");
+            })
+        }
+        $f.addClass("was-validated")
+    }
+
+</script>

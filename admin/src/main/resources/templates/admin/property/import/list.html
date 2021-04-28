@@ -1,0 +1,219 @@
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">资源导入</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a th:href="@{admin}">首页</a></li>
+                    <li class="breadcrumb-item active">栏目列表</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- Main content -->
+<section class="content">
+    <div id="toolbar">
+        <shiro:hasPermission name="permission:add">
+            <button id="btn_add" type="button" class="btn btn-primary">
+                <span class="fas fa-plus" aria-hidden="true"></span>新增
+            </button>
+        </shiro:hasPermission>
+    </div>
+    <div class="card card-info">
+        <form id="searchForm" class="needs-validation form-inline" novalidate="">
+            <div class="form-group">
+                <label for="libType">数据库类型:</label>
+                <select id="libType" class="form-control m-2" required="">
+                    <option selected disabled>选择分类</option>
+                    <option th:each="library:${libraries}" th:value="${library.id}"
+                            th:text="${library.name}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="libraryId">数据库:</label>
+                <select id="libraryId" class="form-control m-2" required="">
+                    <option selected disabled>选择数据库</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="propertyId">资源类型:</label>
+                <select id="propertyId" class="form-control m-2" required="">
+                    <option selected disabled>选择资源类型</option>
+                    <option th:each="property:${properties}" th:value="${property.id}"
+                            th:text="${property.propertyName}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary ml-3" type="submit">查询</button>
+                <button class="btn btn-default ml-2" type="reset">重置</button>
+            </div>
+        </form>
+    </div>
+    <div class="card card-body">
+        <table class="table-sm" id="table"></table>
+    </div>
+</section>
+
+
+<script>
+    var editFlag = "[[${@perms.hasPerm('property:import:index')}]]";
+    var deleteFlag = "[[${@perms.hasPerm('property:import:online')}]]";
+    var columns = [
+        {
+            field: 'libraryName',
+            title: '数据库名称',
+            align: "center"
+        }, {
+            field: 'propertyName',
+            title: '资源类型',
+            align: "center"
+        },{
+            field: 'fileName',
+            title: '上传文件名称',
+            align: "center"
+        },{
+            field: 'filePath',
+            title: '上传文件路径',
+            align: "center"
+        }, {
+            field: 'updateTime',
+            title: '操作时间',
+            align: "center"
+        }, {
+            field: 'operation',
+            title: '操作',
+            align: "center",
+            width: 150,
+            formatter: function (value, row, index) {
+                console.log(row.status);
+                var edit = editFlag && parseInt(row.status)==0? '<button class="btn btn-info btn-sm" onclick="importProperty(' + row.id + ')">标引</button>' : '<button class="btn btn-info btn-sm" style="background-color:#999999;border-color:#999999">标引</button>';
+                var del = deleteFlag && parseInt(row.status)==1? '<button class="btn btn-danger btn-sm ml-1" onclick="onlineProperty(' + row.id + ')">上线</button>' : '<button class="btn btn-danger btn-sm ml-1" style="background-color:#999999;border-color:#999999">上线</button>';
+                return edit + del;
+            }
+        }];
+    var options = {
+        id: "#table",
+        url: '/property/import/list',
+        columns: columns,
+        toolbar: '#toolbar',
+        showRefresh: true,
+        queryParams: queryParams
+    }
+    Core.initTable(options);
+
+    function refreshTable() {
+        Core.refreshTable("#table")
+    }
+
+    /*查询参数*/
+    function queryParams(params) {
+        var libraryId=$("#libraryId").val();
+        var propertyId=$('#propertyId').val();
+        return {
+            pageNumber: params.pageNumber,
+            pageSize: params.pageSize,
+            libraryId: libraryId,
+            propertyId: propertyId,
+        };
+    }
+
+    /*编辑*/
+    function importProperty(id) {
+        Core.confirm("确定标引并导入数据库吗？", function () {
+            Core.postAjax("/property/import/database", {"id": id}, function (data) {
+                if (data.status === 200) {
+                    refreshTable();
+                }
+                var warn=data.msg;
+                if(data.data!=null&&data.data!=undefined){
+                    exportRaw(id+'.txt',JSON.stringify(data.data))
+                }
+                layer.msg(warn);
+            })
+        })
+    }
+
+    function fakeClick(obj) {
+        var ev = document.createEvent("MouseEvents");
+        ev.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        obj.dispatchEvent(ev);
+    }
+
+    function exportRaw(name, data) {
+        var urlObject = window.URL || window.webkitURL || window;
+        var export_blob = new Blob([data]);
+        var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a")
+        save_link.href = urlObject.createObjectURL(export_blob);
+        save_link.download = name;
+        fakeClick(save_link);
+    }
+
+    /*删除*/
+    function onlineProperty(id) {
+        Core.confirm("确定导入solr上线吗？", function () {
+            Core.postAjax("/property/import/solr", {"id": id}, function (data) {
+                if (data.status === 200) {
+                    refreshTable();
+                }
+                layer.msg(data.msg);
+            })
+        })
+    }
+
+    $(function () {
+        // 查询
+        $('#searchForm').submit(function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            refreshTable();
+        })
+
+        // 新增
+        $("#btn_add").click(function () {
+            window.location.href = "#property/import//add"
+        });
+        // 批量删除
+        $("#btn_batch_delete").click(function () {
+            var checkedRows = Core.selectMutiData("#table");
+            if (checkedRows) {
+                Core.confirm("确定删除选中的" + checkedRows.length + "条记录？", function () {
+                    var ids = [];
+                    $.each(checkedRows, function (i, item) {
+                        ids.push(item.id);
+                    })
+                    Core.postAjax("/column/batch/delete", {"ids": ids}, function (data) {
+                        if (data.status === 200) {
+                            refreshTable();
+                        }
+                        layer.msg(data.msg);
+                    })
+                })
+            }
+        });
+
+
+    });
+
+
+    //树-初始化设置
+    var treeSetting = {
+        check: {
+            enable: false,
+            chkStyle: "checkbox",
+            chkboxType: {"Y": "ps", "N": "s"}
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pid"
+            }
+        }
+    };
+    $(function () {
+        initChain();
+    })
+</script>

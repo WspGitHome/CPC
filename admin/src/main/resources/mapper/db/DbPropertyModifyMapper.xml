@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbPropertyModifyMapper">
+
+    <sql id="Base_Column_List">
+		id,
+		property_type,
+		property_id,
+		update_user,
+		update_time
+	</sql>
+    <select id="ifPropertyId" resultType="integer" parameterType="java.lang.String">
+         select count(property_id) from db_property_modify
+         WHERE property_id=#{propertyId}
+    </select>
+	<update id="updateProperty" parameterType="com.wanfangdata.cpc.module.admin.model.db.DbPropertyModify">
+        update  db_property_modify
+        set
+         update_time =#{propertyModify.updateTime}
+        where property_id = #{propertyModify.propertyId} and property_type=#{propertyModify.propertyType}
+	</update>
+    <select id="findByCondition" resultType="com.wanfangdata.cpc.module.admin.model.db.DbPropertyList"  parameterType="com.wanfangdata.cpc.module.admin.vo.db.PropertyModifyConditionVo">
+        select  pro.Id as proId,pro.NewTitle,
+        <if test="vo.proType == 'localChronicle'">
+            pro.BookTitle as title,
+        </if>
+        <if test="vo.proType != 'localChronicle'">
+            pro.Title as title,
+        </if>
+        <if test="vo.proType == 'localChronicle'">
+            pro.Publisher as columnName,
+        </if>
+        <if test="vo.proType != 'localChronicle'">
+            pro.BookTitle as columnName,
+        </if>
+        proModify.update_time
+        from ${vo.proType} as pro
+        left join  db_property_modify as proModify on pro.Id=proModify.property_id
+        where
+        pro.Id in(select property_id from db_property_modify where property_type=#{vo.proType})
+        <if test = "vo.endDate != null and vo.endDate !=''">
+            and proModify.update_time &lt;= date_add(#{vo.endDate}, INTERVAL 1 day)
+        </if>
+        <if test = "vo.startDate != null and vo.endDate !=''">
+            and proModify.update_time &gt;= #{vo.startDate}
+        </if>
+
+    </select>
+    <select id="findLocalChronicleData" resultType="com.wanfangdata.cpc.module.admin.model.db.DbLocalChronicle">
+        select pro.*
+        from localChronicle as pro
+        left join  db_property_modify as proModify on pro.Id=proModify.property_id
+        where
+        pro.Id in(select property_id from db_property_modify where property_type='localChronicle')
+        <if test = "endDate != null and endDate !=''">
+            and proModify.update_time &lt;= date_add(#{endDate}, INTERVAL 1 day)
+        </if>
+        <if test = "startDate != null and endDate !=''">
+            and proModify.update_time &gt;= #{startDate}
+        </if>
+    </select>
+    <select id="findItemData" resultType="com.wanfangdata.cpc.module.admin.model.db.DbLocalChronicleItem">
+        select pro.*
+        from localChronicleItem as pro
+        left join  db_property_modify as proModify on pro.Id=proModify.property_id
+        where
+        pro.Id in(select property_id from db_property_modify where property_type='localChronicleItem')
+        <if test = "endDate != null and endDate !=''">
+            and proModify.update_time &lt;= date_add(#{endDate}, INTERVAL 1 day)
+        </if>
+        <if test = "startDate != null and endDate !=''">
+            and proModify.update_time &gt;= #{startDate}
+        </if>
+    </select>
+</mapper>
+

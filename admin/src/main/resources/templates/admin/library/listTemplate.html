@@ -1,0 +1,168 @@
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">模板列表</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a th:href="@{admin}">首页</a></li>
+                    <li class="breadcrumb-item active">数据库管理</li>
+                    <li class="breadcrumb-item active">数据库列表</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- Main content -->
+<section class="content">
+    <div class="card card-info">
+        <form id="searchForm" class="needs-validation form-inline" novalidate="">
+            <div class="needs-validation form-inline">
+                <div class="form-group">
+                    <label for="libType" style="width: 100px">数据库类型:</label>
+                    <select id="libType" class="form-control m-2" required style="width: 220px;margin-left: -200px">
+                        <option value="">选择类型</option>
+                        <option th:each="library:${libraries}" th:value="${library.id}"
+                                th:text="${library.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-left: 15px">
+                    <label for="libraryId" style="width: 100px">数据库:</label>
+                    <select id="libraryId" name="dbId" class="form-control m-2" style="width: 220px" required>
+                        <option value="">选择数据库</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary ml-3" type="submit">查询</button>
+                <button class="btn btn-default ml-2" type="reset">重置</button>
+            </div>
+        </form>
+    </div>
+    <div class="card card-body">
+        <div id="toolbar" class="btn-group">
+            <button id="btn_batch_delete" type="button" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>批量删除
+            </button>
+        </div>
+        <table class="table-sm" id="table"></table>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        initChain();
+    })
+    var editFlag = "[[${@perms.hasPerm('library:edit')}]]";
+    var deleteFlag = "[[${@perms.hasPerm('library:delete')}]]";
+    var columns = [
+        {checkbox: true},
+        {
+            field: 'dbName',
+            title: '数据库名称',
+            align: "center"
+        }, {
+            field: 'templateName',
+            title: '模板名称',
+            align: "center",
+        }, {
+            field: 'thematicClassification',
+            title: '专题分类',
+            class: 'table-tags',
+            align: "center",
+        },
+        {
+            field: 'areaClassification',
+            title: '地区分类',
+            class: 'table-tags',
+            align: "center",
+        }, {
+            field: 'updateTime',
+            title: '操作时间',
+            align: "center",
+        }, {
+            field: 'operation',
+            title: '操作',
+            align: "center",
+            width: 150,
+            formatter: function (value, row, index) {
+                var edit = editFlag ? '<button class="btn btn-info btn-sm" onclick="editTemplate(' + row.id + ')">编辑</button>' : '';
+                var del = deleteFlag ? '<button class="btn btn-danger btn-sm ml-1" onclick="deleteTemplate(' + row.id + ')">删除</button>' : '';
+                return edit + del;
+            }
+        }];
+    var options = {
+        id: "#table",
+        url: '/template/listTemplate',
+        columns: columns,
+        toolbar: '#toolbar',
+        showRefresh: true,
+        queryParams: queryParams
+    }
+    Core.initTable(options);
+
+    function refreshTable() {
+        Core.refreshTable("#table")
+    }
+
+    /*查询参数*/
+    function queryParams(params) {
+        return {
+            pageNumber: params.pageNumber,
+            pageSize: params.pageSize,
+            dbId: $("#libraryId").val(),
+            dbTypeId: $("#libType").val()
+        };
+    }
+
+    /*编辑*/
+    function editTemplate(id) {
+        window.location.href = "#template/edit?id=" + id
+    }
+
+    /*删除*/
+    function deleteTemplate(id) {
+        Core.confirm("确定删除该分类？", function () {
+            Core.postAjax("/template/delete", {"id": id}, function (data) {
+                if (data.status === 200) {
+                    refreshTable();
+                }
+                layer.msg(data.msg);
+            })
+        })
+    }
+
+    $(function () {
+        // 查询
+        $('#searchForm').submit(function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            refreshTable();
+        })
+
+        // 新增
+        $("#btn_add").click(function () {
+            window.location.href = "#template/addTemplate"
+        });
+        // 批量删除
+        $("#btn_batch_delete").click(function () {
+            var checkedRows = Core.selectMutiData("#table");
+            if (checkedRows) {
+                Core.confirm("确定删除选中的" + checkedRows.length + "条记录？", function () {
+                    var ids = [];
+                    $.each(checkedRows, function (i, item) {
+                        ids.push(item.id);
+                    })
+                    Core.postAjax("/library/batch/delete", {"ids": ids}, function (data) {
+                        if (data.status === 200) {
+                            refreshTable();
+                        }
+                        layer.msg(data.msg);
+                    })
+                })
+            }
+        });
+    });
+
+</script>

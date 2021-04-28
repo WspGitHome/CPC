@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbColumnMapper">
+	<resultMap id="rm" type="com.wanfangdata.cpc.module.admin.model.db.DbColumn">
+		<result property="id" jdbcType="INTEGER" column="id"/>
+		<result property="pid" jdbcType="INTEGER" column="pid"/>
+		<result property="libType" jdbcType="INTEGER" column="lib_type"/>
+		<result property="libraryId" jdbcType="INTEGER" column="library_id"/>
+		<result property="propertyId" jdbcType="INTEGER" column="property_id"/>
+		<result property="addUser" jdbcType="VARCHAR" column="proName"/>
+		<result property="name" jdbcType="VARCHAR" column="name"/>
+		<result property="description" jdbcType="VARCHAR" column="description"/>
+		<result property="sort" jdbcType="INTEGER" column="sort"/>
+		<result property="picture1" jdbcType="VARCHAR" column="picture1"/>
+		<result property="picture2" jdbcType="VARCHAR" column="picture2"/>
+		<result property="addUser" jdbcType="VARCHAR" column="add_user"/>
+		<result property="updateUser" jdbcType="VARCHAR" column="update_user"/>
+		<association property="parent" javaType="com.wanfangdata.cpc.module.admin.model.db.DbColumn">
+			<result property="id" jdbcType="INTEGER" column="p_id"/>
+			<result property="pid" jdbcType="INTEGER" column="p_pid"/>
+			<result property="name" jdbcType="VARCHAR" column="p_name"/>
+		</association>
+		<collection property="children" column="n_id" javaType="ArrayList" ofType="com.wanfangdata.cpc.module.admin.model.db.DbColumn">
+			<result property="id" jdbcType="INTEGER" column="c_id"/>
+			<result property="pid" jdbcType="INTEGER" column="c_pid"/>
+			<result property="name" jdbcType="VARCHAR" column="c_name"/>
+		</collection>
+	</resultMap>
+
+	<resultMap id="list" type="com.wanfangdata.cpc.module.admin.model.db.DbColumn">
+		<result property="id" jdbcType="INTEGER" column="id"/>
+		<result property="pid" jdbcType="INTEGER" column="pid"/>
+		<result property="libraryId" jdbcType="INTEGER" column="library_id"/>
+		<result property="name" jdbcType="VARCHAR" column="name"/>
+		<result property="description" jdbcType="VARCHAR" column="description"/>
+		<result property="sort" jdbcType="INTEGER" column="sort"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,
+		pid,
+		library_id,
+		sort,
+		property_id,
+		name,
+		description,
+		picture1,
+		picture2,
+		add_user,
+		update_user,
+		create_time,
+		update_time
+	</sql>
+	<select id="selecColumnes" resultType="com.wanfangdata.cpc.module.admin.model.db.DbColumn">
+		SELECT * FROM db_column t where 1=1
+		<if test="pid !=null">
+			AND t.pid = #{pid}
+		</if>
+		<if test="pid !=null">
+			AND t.pid = #{pid}
+		</if>
+	</select>
+
+	<delete id="deleteBatch" parameterType="map">
+		DELETE FROM
+		db_column
+		where
+		id in
+		<foreach collection="array" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<select id="getById" parameterType="int" resultMap="rm">
+		select a.*,
+		p.pid p_pid,
+		p.`name` p_name,
+		p.description p_description,
+		lib.type lib_type
+		from db_column a
+		LEFT JOIN db_column p ON a.pid = p.id
+		LEFT JOIN db_library lib ON a.library_id = lib.id
+		WHERE a.id=#{id}
+	</select>
+
+	<select id="getColumnIdByCondition" parameterType="com.wanfangdata.cpc.module.admin.vo.db.ColumnConditionVo" resultType="Integer">
+		SELECT t.id
+		FROM db_column t
+		where 1=1
+		<if test="vo.pid !=null">
+			AND t.pid = #{vo.pid}
+		</if>
+		<if test="vo.id !=null">
+			AND t.id = #{vo.id}
+		</if>
+
+	</select>
+
+
+	<select id="findByCondition" parameterType="com.wanfangdata.cpc.module.admin.vo.db.ColumnConditionVo" resultMap="rm">
+		SELECT t.id,t.name,t.sort,t.description, (select pro.property_name from db_property as pro where pro.id=t.property_id) as proName,
+		p.id p_id,p.name p_name FROM db_column t
+		LEFT JOIN db_column p ON t.pid = p.id
+		where 1=1
+		<if test="vo.pid !=null">
+			AND t.pid = #{vo.pid}
+		</if>
+		<if test="vo.libType !=null">
+			AND t.library_id  in (SELECT id from db_library where type=#{vo.libType})
+		</if>
+		<if test="vo.libraryId !=null">
+			AND t.library_id = #{vo.libraryId}
+		</if>
+		<if test="vo.name !=null">
+			AND t.name like  CONCAT('%',#{vo.name , jdbcType=VARCHAR},'%')
+		</if>
+		ORDER BY t.create_time desc
+	</select>
+	<select id="selecColumneAll" parameterType="int" resultMap="list">
+		SELECT id,pid,library_id,name,description,sort FROM db_column t
+		where 1=1 AND t.library_id=#{libraryId} ORDER BY t.sort
+	</select>
+	<insert id="insertColumn" parameterType="com.wanfangdata.cpc.module.admin.model.db.DbColumn">
+		insert into `db_column` (pid,library_id,sort,property_id,name,description,picture1,picture2,add_user,update_user,create_time,update_time)
+      values (#{pid},#{libraryId},
+      (select max(sort)+1 from db_column as sort),#{propertyId},#{name},#{description},#{picture1},#{picture2},#{addUser},#{updateUser},#{createTime},#{updateTime}
+      )
+	</insert>
+	<select id="moveUp" resultType="com.wanfangdata.cpc.module.admin.model.db.DbColumn" parameterType="java.lang.Integer">
+        select * from db_column  where sort &lt; #{sort} order by sort desc limit 0,1
+	</select>
+	<select id="moveDown" resultType="com.wanfangdata.cpc.module.admin.model.db.DbColumn" parameterType="java.lang.Integer">
+        select * from db_column  where sort &gt; #{sort} order by sort asc limit 0,1
+	</select>
+	<delete id="deleteByLibId" parameterType="integer">
+        delete from db_column
+        where library_id=#{libId}
+	</delete>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM
+        db_column
+        where
+        id = #{id}
+    </delete>
+</mapper>
+

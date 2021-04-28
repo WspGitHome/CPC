@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbFTemplateInfoMapper">
+    <resultMap id="rm" type="com.wanfangdata.cpc.module.admin.model.db.DbTemplateInfo">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="templateName" jdbcType="VARCHAR" column="template_name"/>
+        <result property="templateUrl" jdbcType="VARCHAR" column="template_url"/>
+        <result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+        <result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+        <result property="bigAlbumLogo" jdbcType="VARCHAR" column="big_album_logo"/>
+        <result property="smallAlbumLogo" jdbcType="VARCHAR" column="small_album_logo"/>
+        <result property="homepagePicture" jdbcType="VARCHAR" column="homepage_picture"/>
+        <result property="secondLevelPicture" jdbcType="VARCHAR" column="second_level_picture"/>
+        <result property="classificationPicture" jdbcType="VARCHAR" column="classification_picture"/>
+        <result property="areaClassificationPicture" jdbcType="VARCHAR" column="area_classification_picture"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+		id,
+		template_name,
+		template_url,
+		create_time,
+		update_time,
+		big_album_logo,
+		small_album_logo,
+		homepage_picture,
+		second_level_picture,
+		classification_picture,
+		area_classification_picture
+
+	</sql>
+    <select id="selectById" parameterType="java.lang.Integer" resultMap="rm">
+        select
+        <include refid="Base_Column_List"/>
+        from db_template_info
+        where id = #{id}
+    </select>
+
+</mapper>
+

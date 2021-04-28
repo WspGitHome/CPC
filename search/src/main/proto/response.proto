@@ -1,0 +1,37 @@
+syntax = "proto3";
+package com.wanfangdata.grpc;
+
+option java_multiple_files = true;
+option java_package = "com.wanfangdata.grpc";
+
+
+message SearchResponse {
+    Resulter resulter=1;
+}
+message CatagoryResponse {
+    Catagory catagory=1;
+}
+message UsersResponse {
+    repeated Users users=1;
+}
+message Resulter{
+    string results = 1;//返回列表
+    int32 hit = 2;//查询命中总数
+    int32 curPage = 3;//当前页码
+    int32 pageSize = 4;//每页数量
+    int32 totalPage = 5;//总页码
+    string facets = 6;//聚类结果
+    string facetPivot = 7;//多维聚类结果
+    string extraData = 8;//特殊查询返回结果
+}
+message Catagory{
+    string catagory = 1;//目录
+}
+message Users{
+    string userId = 1;//当前登陆用户Id
+    string userName = 2;//登陆用户名
+    string nickName = 3;//登陆用户昵称
+    string institution = 4;//登陆用户机构名
+    string userType = 5;//登陆用户类型（机构/个人）
+}
+

@@ -1,0 +1,124 @@
+<div class="content-header" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">栏目编辑</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a th:href="@{admin}">首页</a></li>
+                    <li class="breadcrumb-item active">栏目管理</li>
+                    <li class="breadcrumb-item active">栏目编辑</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- Main content -->
+<section class="content">
+    <div class="card card-body">
+        <form id="categoryForm">
+            <input name="id" type="hidden" th:value="${vo.dbColumn?.id}">
+            <div class="form-group row">
+                <label class="col-sm-1 col-form-label">数据库类型:</label>
+                <select id="libType"  name="libType" disabled="true" class="form-control m-2" required=""  th:field="*{vo.dbColumn.libType}" th:style="'width:150px;'">
+                    <option value="">选择类型</option>
+                    <option th:each="libType:${vo.libTypes}" th:value="${libType.id}"
+                            th:text="${libType.name}"></option>
+                </select>
+                <select id="libraryId" name="libraryId" disabled="true" class="form-control m-2" required="" th:field="*{vo.dbColumn.libraryId}" th:style="'width:200px;'">
+                    <option value="">选择数据库</option>
+                    <option th:each="library:${vo.libraries}" th:value="${library.id}"
+                            th:text="${library.name}"></option>
+                </select>
+                <input id="pid-form" name="pid" type="hidden" th:value="${vo.dbColumn.pid}">
+                <select id="pid" name="pid" class="form-control m-2" th:style="'width:200px;'">
+                    <option selected disabled>一级栏目</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-1 col-form-label">资源类型:</label>
+                <select id="propertyType" name="propertyId" class="form-control"  th:style="'width:150px;'">
+                    <option value="">选择资源类型</option>
+                    <option th:selected="${vo.dbColumn?.propertyId}== ${prop.id}"
+                            th:each="prop:${properties}" th:value="${prop.id}"
+                            th:text="${prop.propertyName}"></option>
+                </select>
+                <div class="invalid-feedback">请选择资源类型</div>
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">栏目名称:</label>
+                <input type="text"  th:value="${vo.dbColumn?.name}" name="name" class="form-control "id="name" required placeholder="填写栏目名称"  th:style="'width:800px;'">
+                <div class="invalid-feedback">请填写栏目名称</div>
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">栏目描述:</label>
+                <input type="text" th:value="${vo.dbColumn?.description}"  name="description" class="form-control "id="description" placeholder="填写栏目描述"  th:style="'width:800px;'">
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">图片1:</label>
+                <input type="text" class="form-control" th:value="${vo.dbColumn?.picture1}"name="picture1" id="picture1" placeholder="填写图片1"  th:style="'width:800px;'">
+                <div id="upload-img-btn1" class="btn btn-default input-group-btn" style="min-width: 50px">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">图片2:</label>
+                <input type="text" class="form-control" th:value="${vo.dbColumn?.picture2}"name="picture2" id="picture2" placeholder="填写图片2" th:style="'width:800px;'">
+                <div id="upload-img-btn2" class="btn btn-default input-group-btn" style="min-width: 50px">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" id="saveBtn" onclick="save()">提交</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script th:inline="javascript">
+    function save() {
+        var $f = $('#categoryForm');
+        var valid = $f[0].checkValidity();
+        var url = "/column/edit";
+        if (valid) {
+            Core.mask("#saveBtn");
+            Core.postAjax(url, $f.serialize(), function (data) {
+                Core.unmask("#saveBtn");
+                if (data.status === 200) {
+                    layer.msg(data.msg)
+                    window.location.href = "#columns"
+                }
+            }, function () {
+                Core.unmask("#saveBtn");
+            })
+        }
+        $f.addClass("was-validated")
+    }
+
+    $(function () {
+        $(function () {
+            /*上传封面*/
+            $("#upload-img-btn1").upload({
+                size:1000,
+                server: '/admin/attachment/upload/3',
+                swf: '/admin/img/Uploader.swf'
+            }, function (url) {
+                $("#picture1").val(url);
+            });
+        })
+        /*上传背景图*/
+        $("#upload-img-btn2").upload({
+            size:1000,
+            server: 'attachment/upload/3',
+            swf: '/admin/img/Uploader.swf'
+        }, function (url) {
+            $("#picture2").val(url);
+        });
+    })
+    $(function () {
+        var columnTree = [[${vo.columnTree}]];
+        buildTree(columnTree);
+        initChain();
+    })
+</script>

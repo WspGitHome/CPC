@@ -1,0 +1,94 @@
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 首页</a></li>
+        <li class="active">上传配置</li>
+    </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+    <div class="box box-primary">
+        <div class="box-body">
+            <form class="form-horizontal" id="cloudConfigForm">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">类型 :</label>
+                    <div class="btn-group col-sm-8" id="oss-type">
+                        <label class="radio-inline pr-5 oss-type-radio"><input type="radio"  name="type" value="1" checked> 前端模板路径</label>
+                        <label class="radio-inline pr-5 oss-type-radio"><input type="radio"  name="type" value="2"> 文章资源路径</label>
+                        <label class="radio-inline pr-5 oss-type-radio"><input type="radio"  name="type" value="3"> 栏目资源路径</label>
+                        <label class="radio-inline pr-5 oss-type-radio"><input type="radio"  name="type" value="4"> 资源导入路径</label>
+                        <label class="radio-inline pr-5 oss-type-radio"><input type="radio"  name="type" value="5"> 其他</label>
+                    </div>
+                </div>
+                <div id="oss-type-form-group">
+                    <div id="oss-type-1">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">路径 :</label>
+                            <div class="col-sm-8 col-md-6">
+                                <input type="text" class="form-control" th:value="${uploadConfig[0]}" domain=""  placeholder="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="oss-type-2">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">路径 :</label>
+                            <div class="col-sm-8 col-md-6">
+                                <input type="text" class="form-control" th:value="${uploadConfig[1]}" domain=""  placeholder="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="oss-type-3">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">路径 :</label>
+                            <div class="col-sm-8 col-md-6">
+                                <input type="text" class="form-control" th:value="${uploadConfig[2]}" domain=""  placeholder="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="oss-type-4">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">路径 :</label>
+                            <div class="col-sm-8 col-md-6">
+                                <input type="text" class="form-control" th:value="${uploadConfig[3]}" domain=""  placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="oss-type-5">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">路径 :</label>
+                            <div class="col-sm-8 col-md-6">
+                                <input type="text" class="form-control" th:value="${uploadConfig[4]}" domain=""  placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(function () {
+
+        var menuType = $('input:radio[name="type"]:checked').val();
+        $('#oss-type-' + menuType).show().siblings().hide();
+
+        $('input[type=radio][name=type]').change(function () {
+            $('#oss-type-' + this.value).show().siblings().hide();
+        });
+
+
+        $("#saveConfig").on('click', function () {
+            Core.mask("#saveConfig");
+            Core.postAjax("/attachment/saveConfig",$("#cloudConfigForm").serialize(),function (data) {
+                Core.unmask("#saveConfig");
+                layer.msg(data.msg);
+            })
+
+        })
+    });
+</script>
+
+

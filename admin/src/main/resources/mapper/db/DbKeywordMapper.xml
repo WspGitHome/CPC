@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbKeywordMapper">
+    <resultMap id="rm" type="com.wanfangdata.cpc.module.admin.model.db.DbKeyword">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="orderNum" jdbcType="INTEGER" column="order_num"/>
+        <result property="dbType" jdbcType="INTEGER" column="db_type"/>
+        <result property="libraryId" jdbcType="INTEGER" column="library_id"/>
+        <result property="columnId" jdbcType="VARCHAR" column="column_id"/>
+        <result property="keywords" jdbcType="VARCHAR" column="keywords"/>
+        <result property="keywordName" jdbcType="VARCHAR" column="keyword_name"/>
+        <result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+        <result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+		id,
+		order_num,
+		db_type,
+		library_id,
+		column_id,
+		keywords,
+		keyword_name,
+		create_time,
+		update_time
+	</sql>
+    <select id="findByCondition" resultType="com.wanfangdata.cpc.module.admin.vo.db.KeywordConditionVo" resultMap="rm">
+        select keyword.id,keyword.keywords,keyword.keyword_name,keyword.order_num,
+        (SELECT col.name FROM db_column as col WHERE col.id=keyword.column_id) as column_id
+        from db_keyword as keyword
+        where 1=1
+        <if test="vo.dbType != null">
+            AND keyword.db_type = #{vo.dbType}
+        </if>
+        <if test="vo.libraryId != null">
+            AND keyword.library_id = #{vo.libraryId}
+        </if>
+        <if test="vo.keywordName != null and vo.keywordName !=''">
+            AND keyword.keyword_name like CONCAT('%',#{vo.keywordName , jdbcType=VARCHAR},'%')
+        </if>
+        <if test="vo.columnIds != null and vo.columnIds.length >0 and vo.columnId !=0">
+            AND keyword.column_id in
+            <foreach collection="vo.columnIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        ORDER BY keyword.order_num asc
+    </select>
+    <delete id="deleteBatch">
+        DELETE FROM
+        db_keyword
+        where
+        id in
+        <foreach collection="array" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <insert id="insertKeyword" parameterType="com.wanfangdata.cpc.module.admin.model.db.DbKeyword">
+      insert into `db_keyword` (order_num,db_type,library_id,column_id,keywords,keyword_name,create_time,update_time)
+      values (
+      (select max(order_num)+1 from db_keyword as orderNum),#{dbType},#{libraryId},#{columnId},#{keywords},#{keywordName},#{createTime},#{updateTime}
+      )
+    </insert>
+    <select id="moveUp" resultType="com.wanfangdata.cpc.module.admin.model.db.DbKeyword"
+            parameterType="java.lang.Integer">
+        select * from db_keyword f where f.order_num &lt; #{orderNum} order by f.order_num desc limit 0,1
+    </select>
+    <select id="moveDown" resultType="com.wanfangdata.cpc.module.admin.model.db.DbKeyword"
+            parameterType="java.lang.Integer">
+        	select * from db_keyword f where f.order_num &gt; #{orderNum} order by f.order_num asc limit 0,1
+    </select>
+    <delete id="deleteByLibId" parameterType="integer">
+        delete from db_keyword
+        where library_id=#{libId}
+	</delete>
+    <delete id="deleteByColumnId" parameterType="integer">
+        delete from db_keyword
+        where column_id=#{id}
+	</delete>
+</mapper>

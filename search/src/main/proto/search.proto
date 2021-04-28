@@ -1,0 +1,36 @@
+syntax = "proto3";
+package com.wanfangdata.grpc;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "request.proto";
+import "response.proto";
+
+option java_multiple_files = true;
+option java_package = "com.wanfangdata.grpc";
+
+
+service SearchService{
+    rpc getSearch(SearchRequest) returns (SearchResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/search"
+            body: "searcher"
+        };
+    }
+}
+
+service UserService{
+    rpc getUsers(UsersRequest) returns (UsersResponse) {
+        option (google.api.http) = {
+           get: "/api/v1/users"
+       };
+    }
+}
+
+service CategoryService{
+    rpc getCategory(CatagoryRequest) returns (CatagoryResponse) {
+        option (google.api.http) = {
+           get: "/api/v1/catagory/{bookId}"
+       };
+    }
+}

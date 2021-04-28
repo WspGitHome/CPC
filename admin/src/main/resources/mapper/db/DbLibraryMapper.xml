@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.wanfangdata.cpc.module.admin.mapper.db.DbLibraryMapper">
+    <resultMap id="rm" type="com.wanfangdata.cpc.module.admin.model.db.DbLibrary">
+        <result property="id" jdbcType="INTEGER" column="id"/>
+        <result property="type" jdbcType="VARCHAR" column="type"/>
+        <result property="name" jdbcType="VARCHAR" column="name"/>
+        <result property="aliasPath" jdbcType="VARCHAR" column="alias_path"/>
+        <result property="introduction" jdbcType="VARCHAR" column="introduction"/>
+        <result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+        <result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+		id,
+		type,
+		name,
+		alias_path,
+		introduction,
+		create_time,
+		update_time
+	</sql>
+    <delete id="deleteBatch" parameterType="map">
+        DELETE FROM
+        db_library
+        where
+        id in
+        <foreach collection="array" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="findByCondition" parameterType="com.wanfangdata.cpc.module.admin.vo.db.DblibraryConditionVo"
+            resultMap="rm">
+        select library.id,library.`name`,library.alias_path,library.update_time,
+        (select libtype.`name` from db_libtype as libtype where libtype.id=library.type) as type
+        from db_library as library
+        WHERE 1 = 1
+
+        <if test="vo != null and vo.type != null">
+            AND library.type = #{vo.type}
+        </if>
+        <if test="vo != null and vo.aliasPath != null">
+            AND library.alias_path = #{vo.aliasPath}
+        </if>
+        order by create_time desc
+
+    </select>
+
+    <select id="findAll" resultMap="rm">
+        select library.id,library.name,library.en_name
+        from db_library as library
+        WHERE 1 = 1
+        <if test="type != null and type != '' and type != 0 ">
+            AND library.type = #{type}
+        </if>
+    </select>
+
+    <select id="selectById" resultMap="rm">
+        select library.id,library.type,library.name,library.alias_path
+        from db_library as library
+        WHERE
+         library.id = #{id}
+
+    </select>
+
+
+</mapper>
+

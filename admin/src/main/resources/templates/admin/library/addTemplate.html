@@ -1,0 +1,275 @@
+<div class="content-header" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">添加模板</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a th:href="@{admin}">首页</a></li>
+                    <li class="breadcrumb-item active">数据库管理</li>
+                    <li class="breadcrumb-item active">添加模板</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- Main content -->
+<section class="content">
+    <div class="card card-info">
+        <form id="templateForm">
+            <div class="needs-validation form-inline">
+                <div class="form-group" style="width: 500px;">
+                    <label for="libType" style="width: 100px">数据库类型:</label>
+                    <select id="libType" class="form-control m-2" required style="width: 220px;margin-left: -200px">
+                        <option value="" selected>选择类型</option>
+                        <option th:each="library:${libraries}" th:value="${library.id}"
+                                th:text="${library.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="libraryId" style="width: 100px">数据库:</label>
+                    <select id="libraryId" name="dbId" class="form-control m-2" style="width: 220px" required>
+                        <option value="">选择数据库</option>
+                    </select>
+                    <input type="hidden" id="templateFlag" value="template"/>
+                </div>
+            </div>
+            <div class="needs-validation form-inline" style="margin-left: 15px">
+                <div class="form-group row" style="width: 500px;">
+                    <label for="libraryId" style="width: 100px">模板:</label>
+                    <select id="templateId" name="templateId" class="form-control" placeholder="选择模板"
+                            style="width: 220px">
+                        <option selected value="">选择模板</option>
+                        <option th:each="template:${templates}" th:value="${template.id}"
+                                th:text="${template.templateName}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="resourceTypeBookRead" style="width: 100px">整书阅读:</label>
+                    <input id="resourceTypeBookRead" name="resourceTypeBookRead" placeholder="oss整书阅读资源类型" style="width: 220px"
+                           class="form-control m-2" />
+                </div>
+            </div>
+            <div class="needs-validation form-inline" style="margin-left: 15px">
+                <div class="form-group row" style="width: 500px;">
+                    <label for="resourceTypeItemRead" style="width: 100px">条目阅读:</label>
+                    <input id="resourceTypeItemRead" name="resourceTypeItemRead" placeholder="oss条目阅读资源类型" style="width: 220px"
+                           class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="resourceTypeItemDownload" style="width: 100px">条目下载:</label>
+                    <input id="resourceTypeItemDownload" name="resourceTypeItemDownload" placeholder="oss条目下载资源类型" style="width: 220px"
+                           class="form-control m-2" />
+                </div>
+            </div>
+            <div class="needs-validation form-inline" style="margin-left: 15px">
+                <div class="form-group row" style="width: 500px;">
+                    <label for="bigAlbum" style="width: 100px">专辑大Logo:</label>
+                    <input id="bigAlbum" type="text" readonly name="bigAlbumLogo"
+                           class="form-control" placeholder="上传专辑大Logo" style="width: 220px" value=""/>
+                    <div class="btn btn-default input-group-btn coverUploaderbigAlbum"
+                         style="min-width: 50px">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <label class="bigAlbumPictureLabel"></label>
+                </div>
+                <div class="form-group row">
+                    <label  style="width: 100px">专辑小Logo:</label>
+                    <input id="samllAlbum" type="text" readonly name="smallAlbumLogo" style="width: 220px"
+                           class="form-control" value=""
+                           placeholder="上传专题小Logo" />
+                    <div class="btn btn-default input-group-btn coverUploadersamllAlbum"
+                         style="min-width: 50px">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <label class="samllAlbumPictureLabel"></label>
+                </div>
+            </div>
+
+            <div class="needs-validation form-inline" style="margin-left: 15px">
+                <div class="form-group row" style="width: 500px;">
+                    <label  style="width: 100px">首页底图:</label>
+                    <input id="homepagePicture" type="text" readonly name="homepagePicture"
+                           style="width: 220px" value=""
+                           class="form-control" placeholder="上传首页底图"/>
+                    <div class="btn btn-default input-group-btn coverUploaderhomepage"
+                         style="min-width: 50px">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <label class="homepagePictureLabel"></label>
+                </div>
+                <div class="form-group row">
+                    <label  style="width: 100px">二级页面底图:</label>
+                    <input id="secondLevelPicture" type="text" readonly name="secondLevelPicture"
+                           style="width: 220px"
+                           class="form-control" value=""
+                           placeholder="上传二级页面底图" />
+                    <div class="btn btn-default input-group-btn coverUploadersecondLevel"
+                         style="min-width: 50px">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <label class="secondLevelPictureLabel"></label>
+                </div>
+            </div>
+
+            <div class="needs-validation form-inline" style="margin-left: 15px">
+                <div class="form-group row" style="width: 500px;">
+                    <label for="thematicClassification" style="width: 100px">专题分类:</label>
+                    <input id="thematicClassification" type="text" name="thematicClassification"
+                           class="form-control" placeholder="填写专题分类" style="width: 220px"/>
+                </div>
+                <div class="form-group row">
+                    <label for="thematicClassification" style="width: 100px">专题分类图片:</label>
+                    <input id="classificationPicture" type="text" readonly name="classificationPicture"
+                           class="form-control" style="width: 220px" value=""
+                           placeholder="上传专题分类图片" />
+                    <div class="btn btn-default input-group-btn coverUploaderThemat"
+                         style="min-width: 50px">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <label class="classificationPictureLabel"></label>
+                </div>
+            </div>
+
+            <div class="needs-validation form-inline" style="margin-left: 15px">
+                <div class="form-group row" style="width: 500px;">
+                    <label for="areaClassification" style="width: 100px">地区分类:</label>
+                    <input id="areaClassification" type="text" name="areaClassification"
+                           class="form-control" style="width: 220px" placeholder="填写地区分类"/>
+                </div>
+                <div class="form-group row">
+                    <label for="areaClassification" style="width: 100px">地区分类图片:</label>
+                    <input id="areaClassificationPicture" type="text" readonly
+                           name="areaClassificationPicture"
+                           class="form-control" style="width: 220px" value=""
+                           placeholder="上传地区分类图片" />
+                    <div id="upload-img-btn" class="btn btn-default input-group-btn coverUploaderArea"
+                         style="min-width: 50px">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <label class="areaClassificationLabel"></label>
+                </div>
+            </div>
+
+            <div class="needs-validation form-inline" style="margin-left: 15px">
+                <div class="form-group row" style="width: 500px;">
+                    <label for="buttonColor" style="width: 100px">按钮颜色:</label>
+                    <input id="buttonColor" type="color" name="buttonColor"
+                           class="form-control" placeholder="填写按钮颜色" style="width: 220px" />
+                </div>
+                <div class="form-group row">
+                    <label for="clickColor" style="width: 100px">点击/滑过颜色:</label>
+                    <input id="clickColor" type="color"
+                           name="clickColor"
+                           class="form-control" style="width: 220px"
+                           placeholder="填写点击/滑过颜色" />
+                </div>
+            </div>
+            <div class="needs-validation form-inline" style="margin-left: 15px">
+                <button class="btn btn-primary" type="button" id="btn_save">保存</button>
+            </div>
+
+        </form>
+    </div>
+
+</section>
+
+<script>
+    $(function () {
+        initChain();
+    })
+    $('#btn_save').on('click', function () {
+        var $f = $('#templateForm');
+        if ($('#libType').val().trim() === '') {
+            layer.msg("请选择类型！");
+        } else if ($('#libraryId').val().trim() === '') {
+            layer.msg("请选择数据库！");
+        }  else if ($('#templateId').val().trim() === '') {
+            layer.msg("请选择模板！");
+        }  else {
+            var url = '/template/addTemplate'
+            $f.addClass("was-validated")
+            Core.mask("#btn_save");
+            Core.postAjax(url, $f.serialize(), function (data) {
+                Core.unmask("#btn_save");
+                layer.msg(data.msg);
+                $f.removeClass("was-validated")
+                if (data.status == 200) {
+                    window.location.href="#template/listTemplate";
+                }
+            }, function () {
+                Core.unmask("#btn_save");
+            })
+        }
+    })
+
+    $(function () {
+        /*地区上传图片*/
+        $(".coverUploaderArea").upload({
+            server: 'attachment/upload/5',
+            swf: '/admin/img/Uploader.swf',
+            compress :false
+        }, function (url) {
+            $("#areaClassificationPicture").val(url);
+        });
+
+        /*专题上传图片*/
+        $(".coverUploaderThemat").upload({
+            server: 'attachment/upload/5',
+            swf: '/admin/img/Uploader.swf',
+            compress :false
+        }, function (url) {
+            $("#classificationPicture").val(url);
+        });
+
+        /*二级页面底图上传图片*/
+        $(".coverUploadersecondLevel").upload({
+            server: 'attachment/upload/5',
+            swf: '/admin/img/Uploader.swf',
+            compress :false
+        }, function (url) {
+            $("#secondLevelPicture").val(url);
+        });
+
+        /*首页上传图片*/
+        $(".coverUploaderhomepage").upload({
+            server: 'attachment/upload/5',
+            swf: '/admin/img/Uploader.swf',
+            compress :false
+        }, function (url) {
+            $("#homepagePicture").val(url);
+        });
+
+        /*专题小Logo上传图片*/
+        $(".coverUploadersamllAlbum").upload({
+            server: 'attachment/upload/5',
+            swf: '/admin/img/Uploader.swf',
+            compress :false
+        }, function (url) {
+            $("#samllAlbum").val(url);
+        });
+
+        /*专题大Logo上传图片*/
+        $(".coverUploaderbigAlbum").upload({
+            server: 'attachment/upload/5',
+            swf: '/admin/img/Uploader.swf',
+            compress :false
+        }, function (url) {
+            $("#bigAlbum").val(url);
+        });
+
+    })
+
+    $('#templateId').change(function () {
+        var id=$(this).val();
+        Core.postAjax("/template/templateInfo", {"id": id}, function (data) {
+         $('.bigAlbumPictureLabel').text(data.bigAlbumLogo);
+         $('.samllAlbumPictureLabel').text(data.smallAlbumLogo);
+         $('.homepagePictureLabel').text(data.homepagePicture);
+         $('.secondLevelPictureLabel').text(data.secondLevelPicture);
+         $('.classificationPictureLabel').text(data.classificationPicture);
+         $('.areaClassificationLabel').text(data.areaClassificationPicture);
+        })
+    });
+</script>

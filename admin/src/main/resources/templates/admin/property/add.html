@@ -1,0 +1,115 @@
+<div class="content-header" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">资源添加</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a th:href="@{admin}">首页</a></li>
+                    <li class="breadcrumb-item active">资源添加</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- Main content -->
+<section class="content">
+    <div class="card card-body">
+        <form id="categoryForm">
+            <div  class="needs-validation form-inline">
+                <div class="form-group">
+                    <label for="libType">数据库类型:</label>
+                    <select id="libType" class="form-control m-2" required="">
+                        <option selected value="0">选择分类</option>
+                        <option th:each="library:${libraries}" th:value="${library.id}"
+                                th:text="${library.name}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="libraryId">数据库:</label>
+                    <select id="libraryId" name="libraryId" class="form-control m-2" required="">
+                        <option selected value="0">选择数据库</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input id="pid-form" name="pid" type="hidden" value="0">
+                    <label for="pid">栏目:</label>
+                    <select id="pid"  class="form-control m-2" >
+                        <option selected disabled>一级栏目</option>
+                    </select>
+                </div>
+            </div>
+
+            <br>
+            <br>
+
+            <div class="form-group" style="width: 300px">
+                <label for="property">资源类型:</label>
+                <select id="property"  class="form-control m-2" >
+                    <option selected disabled>请选择</option>
+                    <option th:each="property:${properties}" th:value="${property.id}"
+                            th:text="${property.propertyName}"></option>
+                </select>
+            </div>
+
+
+            <div class="form-group col-xs-12">
+                <label class="control-label label-four">资源数据:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="coverImage" id="coverImage"
+                           placeholder="资源数据文件">
+                    <div class="upload-item">
+                        <a type="button"  class="btn btn-sm btn-block btn-info coverUploader">上传</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <shiro:hasPermission name="column:edit">
+            <div class="btn-group mt-3">
+                <button type="submit" id="btn_save" class="btn btn-success">保存</button>
+            </div>
+        </shiro:hasPermission>
+    </div>
+</section>
+
+<script th:inline="javascript">
+    $(function () {
+
+        $('#btn_save').on('click', function () {
+            debugger
+            console.log($("#pid").val())
+            var $f = $('#categoryForm');
+            var valid = $f[0].checkValidity();
+            var url = '/property/add'
+            if (valid) {
+                $f.addClass("was-validated")
+                Core.mask("#btn_save");
+                Core.postAjax(url, $f.serialize(), function (data) {
+                    Core.unmask("#btn_save");
+                    layer.msg(data.msg);
+                    $f.removeClass("was-validated")
+                }, function () {
+                    Core.unmask("#btn_save");
+                })
+            }
+        })
+    })
+
+
+    $(function () {
+        /*上传图片*/
+        $(".coverUploader").upload({
+            server: '/attachment/upload/4',
+            swf: '/admin/img/Uploader.swf'
+        }, function (url) {
+            $("#coverImage").val(url);
+        });
+
+
+    })
+
+    $(function () {
+        initChain();
+    })
+</script>

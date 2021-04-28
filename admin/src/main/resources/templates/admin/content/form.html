@@ -1,0 +1,142 @@
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">编辑文章</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a th:href="@{admin}">首页</a></li>
+                    <li class="breadcrumb-item active">文章管理</li>
+                    <li class="breadcrumb-item active">编辑文章</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<section class="content">
+    <div class="card card-body">
+        <form id="articleForm" class="" novalidate="">
+            <input name="id" type="hidden" th:value="${dbContent?.id}">
+            <input id="articleContent" type="hidden" name="contentDetails" th:value="${article?.contentDetails}">
+            <input id="articleContentMd" type="hidden" name="contentMd">
+            <div class="form-group row">
+                <label class="col-sm-1 col-form-label">所属栏目:</label>
+                <select id="libType" name="dbType"  class="form-control m-2" required=""  th:field="*{vo.dbColumn.libType}" th:style="'width:150px;'">
+                    <option value="">选择类型</option>
+                    <option th:each="libType:${vo.libTypes}" th:value="${libType.id}"
+                            th:text="${libType.name}"></option>
+                </select>
+                <select id="libraryId" name="libraryId" class="form-control m-2" required="" th:field="*{vo.dbColumn.libraryId}" th:style="'width:200px;'">
+                    <option value="">选择数据库</option>
+                    <option th:each="library:${vo.libraries}" th:value="${library.id}"
+                            th:text="${library.name}"></option>
+                </select>
+                <input id="pid-form" name="columnId" type="hidden" th:value="${dbContent?.columnId}">
+                <select id="pid" name="columnId" class="form-control m-2"  th:style="'width:200px;'">
+                    <option selected disabled>一级栏目</option>
+                </select>
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">标题:</label>
+                <b style="color:red">*</b> <input type="text" th:value="${dbContent?.title}" name="title" class="form-control m-2" style="width:1320px;" id="title"  placeholder="填写标题" required>
+                    <div class="invalid-feedback">请填写标题</div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-1 col-form-label">作者:</label>
+                <div class="col-sm-10">
+                    <input type="text" th:value="${dbContent?.author}" name="author" class="form-control" id="author" placeholder="填写作者" >
+                </div>
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">来源:</label>
+                <div class="col-sm-10">
+                    <input type="text" th:value="${dbContent?.source}" name="source" class="form-control" id="source"placeholder="填写来源" >
+                </div>
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">URL:</label>
+                <div class="col-sm-10">
+                    <input type="text" th:value="${dbContent?.url}" name="url" class="form-control" id="url" placeholder="填写URL" >
+                </div>
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">图片:</label>
+                <div class="col-sm-10">
+                <input type="text" class="form-control" th:value="${dbContent?.picture}"name="picture" id="picture" placeholder="填写图片" >
+                </div>
+                    <div id="upload-img-btn" class="btn btn-default input-group-btn" style="min-width: 50px">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">内容简介:</label>
+                <div class="col-sm-10">
+                    <textarea th:text="${dbContent?.introduction}" rows="2" type="text" name="introduction" class="form-control" id="introduction" placeholder="填写内容简介" ></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label  class="col-sm-1 col-form-label">内容:</label>
+                <div class="col-sm-10" >
+                    <div id="articleField"></div>
+                </div>
+                <input id="contentDetails" name="contentDetails" type="hidden" value="">
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" id="updateBtn" onclick="saveOrUpdate()">提交</button>
+            </div>
+
+        </form>
+    </div>
+</section>
+<script th:src="@{admin/ueditor/ueditor.config.js}"></script>
+<script th:src="@{admin/ueditor/ueditor.all.min.js}"></script>
+<script th:inline="javascript">
+    $(function () {
+        var columnTree = [[${vo.columnTree}]];
+        buildTree(columnTree);
+        initChain();
+    })
+
+</script>
+<script th:inline="javascript">
+    var ue = UE.getEditor('articleField');
+    var content = [[${dbContent.contentDetails}]];
+    ue.ready(function() {
+        ue.setContent(content);
+    });
+
+    $(function () {
+        /*上传封面*/
+        $(".input-group-btn").upload({
+            size:1000,
+            server: '/admin/attachment/upload/2',
+            swf: '/admin/img/Uploader.swf'
+        }, function (url) {
+            $("#picture").val(url);
+        });
+    })
+    function saveOrUpdate() {
+        var $f = $('#articleForm');
+        var valid = $f[0].checkValidity();
+        var url = "/content/edit";
+        if (valid) {
+            Core.mask("#updateBtn");
+            Core.postAjax(url, $f.serialize(), function (data) {
+                Core.unmask("#updateBtn");
+                if (data.status === 200) {
+                    layer.msg(data.msg)
+                    window.location.href = "#contents"
+                }
+            }, function () {
+                Core.unmask("#updateBtn");
+            })
+        }
+        $f.addClass("was-validated")
+    }
+
+</script>
+<style>
+    .ck-editor__editable { min-height: 250px; }
+</style>

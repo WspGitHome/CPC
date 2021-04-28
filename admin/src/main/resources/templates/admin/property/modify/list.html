@@ -1,0 +1,120 @@
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">资源更新记录</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a th:href="@{admin}">首页</a></li>
+                    <li class="breadcrumb-item active">资源管理</li>
+                    <li class="breadcrumb-item active">资源更新记录</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- Main content -->
+<section class="content">
+    <div id="toolbar">
+        <button id="btn_add" type="button" class="btn btn-primary" onclick="downloadFile();">
+            <span class="fas fa-plus" aria-hidden="true" ></span>导出
+        </button>
+    </div>
+    <div class="card card-info">
+        <form id="searchForm" class="needs-validation form-inline" novalidate="">
+            <div class="form-group">
+                <label for="proType">资源类型:</label>
+                <select id="proType" class="form-control m-2" >
+                    <option th:each="prop:${properties}" th:value="${prop.propertyTableName}"
+                            th:text="${prop.propertyName}"></option>
+                </select>
+                <label >开始时间:</label>
+                <input class="form-control m-2" name ="startDate" id="startDate" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',maxDate:'#F{$dp.$D(\'endDate\')}'})" />
+                <label >结束时间:</label>
+                <input class="form-control m-2" name ="endDate" id="endDate" type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'#F{$dp.$D(\'startDate\')}'})" />
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary ml-3" type="submit">查询</button>
+                <button class="btn btn-default ml-2" type="reset">重置</button>
+            </div>
+        </form>
+    </div>
+    <div class="card card-body">
+        <table class="table-sm" id="table"></table>
+    </div>
+</section>
+<script th:src="@{admin/plugins/wdatePicker/wdatePicker.js}"></script>
+<script th:inline="javascript">
+    var itemName=""
+    if($("#proType").val()=="localChronicle"){
+        itemName="出版单位"
+    }else{
+        itemName="志书题名"
+    }
+    var columns = [
+        {
+            field: 'proId',
+            title: '资源id',
+            align: "center"
+        }, {
+            field: 'title',
+            title: '题名',
+            align: "center",
+        }, {
+            field: 'newTitle',
+            title: '规范题名',
+            align: "center",
+        }, {
+            field: 'columnName',
+            title: itemName,
+            align: "center",
+        },
+        {
+            field: 'updateTime',
+            title: '操作时间',
+            align: "center",
+        }];
+    var options = {
+        id: "#table",
+        url: '/propertyModify/list',
+        columns: columns,
+        toolbar: '#toolbar',
+        showRefresh: true,
+        queryParams: queryParams
+    }
+    Core.initTable(options);
+
+    function refreshTable() {
+        Core.refreshTable("#table")
+    }
+
+    /*查询参数*/
+    function queryParams(params) {
+        return {
+            pageNumber: params.pageNumber,
+            pageSize: params.pageSize,
+            proType: $("#proType").val(),
+            startDate: $("#startDate").val(),
+            endDate: $("#endDate").val()
+        };
+    }
+
+    $(function () {
+        // 查询
+        $('#searchForm').submit(function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            refreshTable();
+        })
+    });
+   function downloadFile() {
+       var proType=$("#proType").val();
+       var startDate=$("#startDate").val();
+       var endDate=$("#endDate").val();
+       var proName = $("#proType option:checked").text();
+       Core.confirm("确定导出"+proName+"数据？", function () {
+           window.location.href="propertyModify/export?proType="+proType+"&startDate="+startDate+"&endDate="+endDate;
+       })
+   }
+</script>

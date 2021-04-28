@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Root>
+    <AlbumCategory Value="教育事业" Name="A">
+        <SubAlbumCategory Value="教育理论" Name="A1" />
+        <SubAlbumCategory Value="教育方针、政策" Name="A2" />
+        <SubAlbumCategory Value="教育改革与发展" Name="A3" />
+        <SubAlbumCategory Value="教育系统与结构" Name="A4" />
+        <SubAlbumCategory Value="教育制度" Name="A5" />
+        <SubAlbumCategory Value="教育组织与活动" Name="A6" />
+        <SubAlbumCategory Value="教育史" Name="A7" />
+        <SubAlbumCategory Value="教育科学研究" Name="A8" />
+        <SubAlbumCategory Value="教育心理学" Name="A9" />
+        <SubAlbumCategory Value="健康教育" Name="A10" />
+    </AlbumCategory>
+    <AlbumCategory Value="教育行政" Name="B">
+        <SubAlbumCategory Value="教育行政机关" Name="B1" />
+        <SubAlbumCategory Value="教育科研管理" Name="B2" />
+        <SubAlbumCategory Value="教育视导" Name="B3" />
+        <SubAlbumCategory Value="教育调查" Name="B4" />
+        <SubAlbumCategory Value="教育财政" Name="B5" />
+    </AlbumCategory>
+    <AlbumCategory Value="思想政治教育" Name="C">
+        <SubAlbumCategory Value="马列主义毛泽东思想教育" Name="C1" />
+        <SubAlbumCategory Value="人生观、世界观与理想教育" Name="C2" />
+        <SubAlbumCategory Value="阶级教育、革命传统教育" Name="C3" />
+        <SubAlbumCategory Value="红色教育" Name="C4" />
+        <SubAlbumCategory Value="纪律、民主与法制教育" Name="C5" />
+        <SubAlbumCategory Value="思想品德教育" Name="C6" />
+        <SubAlbumCategory Value="军事训练教育" Name="C7" />
+        <SubAlbumCategory Value="职业道德教育" Name="C8" />
+
+    </AlbumCategory>
+    <AlbumCategory Value="各级教育" Name="D">
+        <SubAlbumCategory Value="学前教育、幼儿教育" Name="D1" />
+        <SubAlbumCategory Value="初等教育" Name="D2" />
+        <SubAlbumCategory Value="中等教育" Name="D3" />
+        <SubAlbumCategory Value="高等教育" Name="D4" />
+        <SubAlbumCategory Value="师范教育" Name="D5" />
+    </AlbumCategory>
+    <AlbumCategory Value="各类教育" Name="E">
+        <SubAlbumCategory Value="职业技术教育" Name="E1" />
+        <SubAlbumCategory Value="成人教育、业余教育" Name="E2" />
+        <SubAlbumCategory Value="华侨教育、侨民教育" Name="E3" />
+        <SubAlbumCategory Value="少数民族教育" Name="E4" />
+        <SubAlbumCategory Value="特殊教育" Name="E5" />
+        <SubAlbumCategory Value="社会教育" Name="E6" />
+        <SubAlbumCategory Value="家庭教育" Name="E7" />
+        <SubAlbumCategory Value="自学" Name="E8" />
+    </AlbumCategory>
+    <AlbumCategory Value="教学理论" Name="F">
+        <SubAlbumCategory Value="教学研究和改革" Name="F1" />
+        <SubAlbumCategory Value="教学过程" Name="F2" />
+        <SubAlbumCategory Value="教学评估" Name="F3" />
+        <SubAlbumCategory Value="教学课程" Name="F4" />
+        <SubAlbumCategory Value="教学组织" Name="F5" />
+        <SubAlbumCategory Value="各派教学法" Name="F6" />
+        <SubAlbumCategory Value="教研室（组）工作" Name="F7" />
+    </AlbumCategory>
+    <AlbumCategory Value="电化教育" Name="G">
+        <SubAlbumCategory Value="视听教学" Name="G1" />
+        <SubAlbumCategory Value="广播、电视教学" Name="G2" />
+        <SubAlbumCategory Value="计算机化教学" Name="G3" />
+        <SubAlbumCategory Value="电化教材" Name="G4" />
+    </AlbumCategory>
+    <AlbumCategory Value="教育工作者与学生" Name="H">
+        <SubAlbumCategory Value="教育工作者" Name="H1" />
+        <SubAlbumCategory Value="学生" Name="H2" />
+        <SubAlbumCategory Value="学校与家庭、学校与社会" Name="H3" />
+    </AlbumCategory>
+    <AlbumCategory Value="学校管理" Name="I">
+        <SubAlbumCategory Value="学校管理体制" Name="I1" />
+        <SubAlbumCategory Value="行政工作" Name="I2" />
+        <SubAlbumCategory Value="教务工作" Name="I3" />
+        <SubAlbumCategory Value="总务工作" Name="I4" />
+        <SubAlbumCategory Value="学校卫生工作" Name="I5" />
+        <SubAlbumCategory Value="学校概况" Name="I6" />
+    </AlbumCategory>
+    <AlbumCategory Value="学校建筑和设备的管理" Name="J">
+        <SubAlbumCategory Value="教室" Name="J1" />
+        <SubAlbumCategory Value="实验室和设备" Name="J2" />
+        <SubAlbumCategory Value="附属建筑和设备" Name="J3" />
+        <SubAlbumCategory Value="教学设备" Name="J4" />
+    </AlbumCategory>
+    <AlbumCategory Value="其他" Name="Z">
+        <SubAlbumCategory Value="名录" Name="Z1" />
+        <SubAlbumCategory Value="题词" Name="Z2" />
+    </AlbumCategory>
+</Root>

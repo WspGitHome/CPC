@@ -1,0 +1,12 @@
+server:
+  port: 30000
+spring:
+  application:
+    name: spring-boot-grpc-client
+
+grpc:
+  client:
+    server:
+     # address: static://10.20.21.122:9903
+      host: 10.20.21.122
+      port: 9903
